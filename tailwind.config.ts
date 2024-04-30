@@ -52,6 +52,42 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "theme-blue": {
+            50: "#f0ebfc",
+            100: "#d2c2f4",
+            200: "#bca4ef",
+            300: "#9d7ae8",
+            400: "#8a61e3",
+            500: "#6d39dc",
+            600: "#6334c8",
+            700: "#4d289c",
+            800: "#3c1f79",
+            900: "#2e185c"
+        },
+        "theme-purple": {
+            50: "#f5e8fd",
+            100: "#e0b9f8",
+            200: "#d197f4",
+            300: "#bd68ef",
+            400: "#b04aec",
+            500: "#9c1de7",
+            600: "#8e1ad2",
+            700: "#6f15a4",
+            800: "#56107f",
+            900: "#420c61"
+        },
+        "theme-orange": {
+            50: "#fff1ef",
+            100: "#ffd3cd",
+            200: "#ffbeb5",
+            300: "#ffa193",
+            400: "#ff8e7e",
+            500: "#ff725e",
+            600: "#e86856",
+            700: "#b55143",
+            800: "#8c3f34",
+            900: "#6b3027"
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
