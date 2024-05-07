@@ -57,64 +57,66 @@ const components: { title: string; href: string; description: string }[] = [
 export default function Header() {
     return(
         <>
-            <header className="flex  bg-theme-violet-500 items-center">
-                <Link href="/">
-                    <Image src="logo.svg" height={150} width={150} alt="Preppi logo" />
+            <header className="flex items-center standard-page">
+                <Link href="/" className="mr-6">
+                    <Image src="logo.svg" height={30.24} width={105.84} alt="Preppi logo" />
                 </Link>
-                <NavigationMenu>
+                <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                        <NavigationMenuTrigger>Quizzes</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                            {components.map((component) => (
-                                <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
-                                >
-                                {component.description}
-                                </ListItem>
-                            ))}
-                            </ul>
-                        </NavigationMenuContent>
+                            <NavigationMenuTrigger>Quizzes</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                {components.map((component) => (
+                                    <ListItem
+                                    key={component.title}
+                                    title={component.title}
+                                    href={component.href}
+                                    >
+                                    {component.description}
+                                    </ListItem>
+                                ))}
+                                </ul>
+                            </NavigationMenuContent>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                        <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                            {components.map((component) => (
-                                <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
-                                >
-                                {component.description}
-                                </ListItem>
-                            ))}
-                            </ul>
-                        </NavigationMenuContent>
+                            <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                {components.map((component) => (
+                                    <ListItem
+                                    key={component.title}
+                                    title={component.title}
+                                    href={component.href}
+                                    >
+                                    {component.description}
+                                    </ListItem>
+                                ))}
+                                </ul>
+                            </NavigationMenuContent>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                        <NavigationMenuTrigger>About</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                            {components.map((component) => (
-                                <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
-                                >
-                                {component.description}
-                                </ListItem>
-                            ))}
-                            </ul>
-                        </NavigationMenuContent>
+                            <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                {components.map((component) => (
+                                    <ListItem
+                                    key={component.title}
+                                    title={component.title}
+                                    href={component.href}
+                                    >
+                                    {component.description}
+                                    </ListItem>
+                                ))}
+                                </ul>
+                            </NavigationMenuContent>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
-                <Button variant="halfTransparent">Log in</Button>
-                <Button>Sign up</Button>
+                <div className="grow text-right">
+                    <Button variant="halfTransparent" className="hidden sm:inline-block mr-3">Log in</Button>
+                    <Button>Sign up</Button>
+                </div>
             </header>
         </>
     )

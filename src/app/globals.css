@@ -74,3 +74,47 @@
         @apply bg-background text-foreground;
         }
     }
+
+    .customCorner{
+        clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%, 0 100%);
+    }
+
+    .standard-page{
+        @apply m-8;
+    }
+    
+    @screen sm {
+        .customCorner{
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 55% 100%, 0 100%);
+        }
+    
+        .standard-page{
+            @apply w-[500px] mx-auto my-8;
+        }   
+    }
+
+    @screen md {
+        .standard-page{
+            @apply w-[700px] mx-auto my-8;
+        }
+    }
+
+    @screen lg {
+        .standard-page{
+            @apply w-[900px] mx-auto my-8;
+        }
+    }
+
+    @screen xl {
+        .standard-page{
+            @apply w-[1100px] mx-auto my-8;
+        }
+    }
+
+    @screen 2xl {
+        .standard-page{
+            @apply w-[1300px] mx-auto my-8;
+        }
+    }
+
+    
