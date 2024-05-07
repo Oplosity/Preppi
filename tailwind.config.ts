@@ -64,7 +64,7 @@ const config = {
             800: "#3c1f79",
             900: "#2e185c"
         },
-        "theme-purple": {
+        "theme-violet": {
             50: "#f5e8fd",
             100: "#e0b9f8",
             200: "#d197f4",
