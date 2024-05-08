@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Button } from "./ui/button"
 import Image from "next/image"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBars } from "@fortawesome/free-solid-svg-icons"
 
 const components: { title: string; href: string; description: string }[] = [
     {
@@ -115,7 +117,18 @@ export default function Header() {
                 </NavigationMenu>
                 <div className="grow text-right">
                     <Button variant="halfTransparent" className="hidden sm:inline-block mr-3">Log in</Button>
-                    <Button>Sign up</Button>
+                    <Button className="mr-3">Sign up</Button>
+                    {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
+                    <NavigationMenu className="inline-block md:hidden">
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger>
+                                <NavigationMenuContent>
+                                    <NavigationMenuLink>Link</NavigationMenuLink>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
                 </div>
             </header>
         </>
@@ -138,9 +151,6 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
         </a>
       </NavigationMenuLink>
     </li>

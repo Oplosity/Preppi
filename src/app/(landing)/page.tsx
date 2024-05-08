@@ -2,15 +2,36 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button"
 import Image from "next/image";
 import { Bungee } from "next/font/google";
+import { Badge } from "@/components/ui/badge"
+
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion"
 
 const bungee = Bungee({ subsets: ["latin"], weight: "400" });
 
-function Quiz(){
+type Tag = {
+    title: string;
+    key: string;
+    variant: "default" | "secondary" | "destructive" | "outline" | "lightOrange" | "lightGreen" | "lightYellow" | "lightPink" | "lightPurple" | "lightBlue" | null | undefined;
+}
+
+function Quiz({src, alt, title, description, tags}: {src: string, alt: string, title: string, description: string, tags: Tag[]}){
     return(
-        <div>
-            <div className="relative aspect-[16/9] h-48">
-                <Image src="/landing/quizzes/maths.jpg" alt="Mathematics illustration" fill />
+        <div className="group cursor-default">
+            <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden">
+                <Image src={src} alt={alt} fill />
             </div>
+            <h4 className="text-xl font-extrabold uppercase mt-4 text-neutral-600 group-hover:text-neutral-900">{title}</h4>
+            <div className="mt-3 flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                    <Badge variant={tag.variant} key={tag.key}>{tag.title}</Badge>
+                ))}
+            </div>
+            <p className="mt-3 text-neutral-600 group-hover:text-neutral-900">{description}</p>
         </div>
     )
 }
@@ -32,13 +53,58 @@ export default function Home() {
         </div>
         <div className="standard-page">
             <h2 className="text-2xl font-extrabold">Quizzes</h2>
-            <div className="flex">
-                <Quiz />
-                <Quiz />
-                <Quiz />
-                <Quiz />
-                <Quiz />
-                <Quiz />
+            <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 justify-between">
+                <Quiz
+                src="/landing/quizzes/math.jpg"
+                alt="Mathematics illustration"
+                title="Math"
+                description="Ready to test your skills? Take the quiz to evaluate your knowledge and see where you stand. It&apos;s a fun and easy way to challenge yourself and learn something new!"
+                tags={[
+                    {title: "Algebra", key: "math-algebra", variant: "lightOrange"},
+                    {title: "Calculus", key: "math-calculus", variant: "lightGreen"},
+                    {title: "Probability", key: "math-probability", variant: "lightYellow"},
+                    {title: "Statistics", key: "math-statistics", variant: "lightPink"},
+                    {title: "Geometry", key: "math-geometry", variant: "lightPurple"},
+                    {title: "Economics", key: "math-economics", variant: "lightBlue"},
+                    ]} />
+                <Quiz
+                src="/landing/quizzes/biology.jpg"
+                alt="Biology illustration"
+                title="Biology"
+                description="Ready to test your skills? Take the quiz to evaluate your knowledge and see where you stand. It&apos;s a fun and easy way to challenge yourself and learn something new!"
+                tags={[{title: "hi", key: "biology-hi", variant: "lightOrange"}]} />
+                <Quiz
+                src="/landing/quizzes/robotics.jpg"
+                alt="Robotics illustration"
+                title="Robotics"
+                description="Ready to test your skills? Take the quiz to evaluate your knowledge and see where you stand. It&apos;s a fun and easy way to challenge yourself and learn something new!"
+                tags={[{title: "hi", key: "robotics-hi", variant: "lightOrange"}]} />
+            </div>
+        </div>
+        <div className="standard-page">
+            <h2 className="text-2xl font-extrabold">Frequently Asked Questions</h2>
+            <p className="mt-2">Got questions? We&apos;ve got answers! Dive into our frequently asked questions below.</p>
+            <div className="mt-4 w-full">
+                <Accordion type="multiple">
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                        <AccordionContent>
+                        Yes. It adheres to the WAI-ARIA design pattern.
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2">
+                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                        <AccordionContent>
+                        Yes. It adheres to the WAI-ARIA design pattern.
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-3">
+                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                        <AccordionContent>
+                        Yes. It adheres to the WAI-ARIA design pattern.
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
             </div>
         </div>
     </main>
