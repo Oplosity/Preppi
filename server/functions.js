@@ -98,13 +98,30 @@ async function getQuizzes(subject) {
     try {
         // Look for quizzes with the specified subject
         const quizzes = await db.query(`
-        SELECT quiz_name, quiz_desc, quizzes, subject
-        FROM preppi_schema.users 
-        WHERE (subject = $1)`, [subject]);
+        SELECT quiz_name, quiz_desc, questions, subject
+        FROM preppi_schema.quizzes 
+        WHERE subject = $1`, [subject]);
 
-        if (quizzes.rows > 0) {
+        // Check if any quizzes for that subject exist yet
+        if (quizzes.rows.length > 0) {
             console.log("Successfully got quizzes.");
-            return { status: 200, message: quizzes.rows };
+            // Format quizzes
+            const formattedQuizzes = quizzes.rows.map(row => {
+                try {
+                    return {
+                        quiz_name: row.quiz_name,
+                        quiz_desc: row.quiz_desc,
+                        questions: row.questions,
+                        subject: row.subject
+                    };
+                } catch (error) {
+                    console.error("Error parsing JSON for quiz:", row.quiz_name, error);
+                    return null;
+                }
+            });
+
+            console.log("Successfully got and formatted quizzes");
+            return { status: 200, message: formattedQuizzes };
 
         } else {
             console.log("Successfully got quizzes. However, none exist.");
@@ -115,6 +132,6 @@ async function getQuizzes(subject) {
         console.error("Error during getting quizzes for subject " + subject + ':', error);
         return { status: 500, message: "Internal Server Error" };
     }
-} 
+}
 
 module.exports = { userLogin, userRegister, getQuizzes };
