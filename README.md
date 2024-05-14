@@ -12,15 +12,15 @@
 - **PostgreSQL**: Required for running the database
     - You can download it from the internet
     - **Setting up:**
-        1. Open pgAdmin4, it will ask for the password you set during installation
-        2. Once inside, right-click on 'Databases (1)' and create a new database called 'preppi_db'
-        3. Right-click the database, and click on 'Query Tool'
-        4. Press the folder icon, then locate and open file 'create_db.sql' that came with the repository
-        5. Press the execute script button or press F5
-        6. Once it has run, refresh the database by right-clicking it and clicking 'Refresh...'
-        7. Check to ensure that a schema called 'preppi_schema' was created
-        8. Ensure that there are 3 tables inside the schema: users, scores, and quizzes
-        9. You are done!
+        - Open pgAdmin4, it will ask for the password you set during installation
+        - Once inside, right-click on 'Databases (1)' and create a new database called 'preppi_db'
+        - Right-click the database, and click on 'Query Tool'
+        - Press the folder icon, then locate and open file 'create_db.sql' that came with the repository
+        - Press the execute script button or press F5
+        - Once it has run, refresh the database by right-clicking it and clicking 'Refresh...'
+        - Check to ensure that a schema called 'preppi_schema' was created
+        - Ensure that there are 3 tables inside the schema: users, scores, and quizzes
+        - You are done!
 
 ## Requests
 
@@ -42,5 +42,5 @@
 
 - **Get Quizzes**: `http://localhost:3001/quizzes?subject=searchedsubject`
     - This is for getting the quizzes within a specific subject (e.g., math, biology, etc...)
-    - `"searchedsubject"` is the subject that you want to search for, replace it with some subject
+    - `'searchedsubject'` is the subject that you want to search for, replace it with some subject
     - Returns quiz name, description, questions, and subject
