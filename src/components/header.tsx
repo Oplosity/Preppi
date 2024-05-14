@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Button } from "./ui/button"
 import Image from "next/image"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBars } from "@fortawesome/free-solid-svg-icons"
 
 const components: { title: string; href: string; description: string }[] = [
     {
@@ -56,67 +58,82 @@ const components: { title: string; href: string; description: string }[] = [
 
 export default function Header() {
     return(
-        <>
-            <header className="flex  bg-theme-violet-500 items-center">
-                <Link href="/">
-                    <Image src="logo.svg" height={150} width={150} alt="Preppi logo" />
+        <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
+            <header className="flex items-center standard-page-padding">
+                <Link href="/" className="mr-6">
+                    <Image src="logo.svg" height={30.24} width={105.84} alt="Preppi logo" />
                 </Link>
-                <NavigationMenu>
+                <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                        <NavigationMenuTrigger>Quizzes</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                            {components.map((component) => (
-                                <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
-                                >
-                                {component.description}
-                                </ListItem>
-                            ))}
-                            </ul>
-                        </NavigationMenuContent>
+                            <NavigationMenuTrigger>Quizzes</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                {components.map((component) => (
+                                    <ListItem
+                                    key={component.title}
+                                    title={component.title}
+                                    href={component.href}
+                                    >
+                                    {component.description}
+                                    </ListItem>
+                                ))}
+                                </ul>
+                            </NavigationMenuContent>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                        <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                            {components.map((component) => (
-                                <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
-                                >
-                                {component.description}
-                                </ListItem>
-                            ))}
-                            </ul>
-                        </NavigationMenuContent>
+                            <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                {components.map((component) => (
+                                    <ListItem
+                                    key={component.title}
+                                    title={component.title}
+                                    href={component.href}
+                                    >
+                                    {component.description}
+                                    </ListItem>
+                                ))}
+                                </ul>
+                            </NavigationMenuContent>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                        <NavigationMenuTrigger>About</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                            {components.map((component) => (
-                                <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
-                                >
-                                {component.description}
-                                </ListItem>
-                            ))}
-                            </ul>
-                        </NavigationMenuContent>
+                            <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                {components.map((component) => (
+                                    <ListItem
+                                    key={component.title}
+                                    title={component.title}
+                                    href={component.href}
+                                    >
+                                    {component.description}
+                                    </ListItem>
+                                ))}
+                                </ul>
+                            </NavigationMenuContent>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
-                <Button variant="halfTransparent">Log in</Button>
-                <Button>Sign up</Button>
+                <div className="grow text-right">
+                    <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">
+                    <Link href="/auth/log-in">Log in</Link>
+                    </Button>
+                    <Button asChild className="mr-3"><Link href="/auth/sign-up">Sign up</Link></Button>
+                    {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
+                    <NavigationMenu className="inline-block md:hidden">
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
+                                <NavigationMenuContent>
+                                    <NavigationMenuLink>Link</NavigationMenuLink>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
+                </div>
             </header>
-        </>
+        </div>
     )
 }
 
@@ -136,9 +153,6 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
         </a>
       </NavigationMenuLink>
     </li>
