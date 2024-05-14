@@ -56,10 +56,10 @@ const components: { title: string; href: string; description: string }[] = [
     },
   ]
 
-export default function Header() {
+export default function AppHeader() {
     return(
         <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
-            <header className="flex items-center standard-page-padding">
+            <header className="flex items-center standard-app-padding">
                 <Link href="/" className="mr-6">
                     <Image src="/logo.svg" height={30.24} width={105.84} alt="Preppi logo" />
                 </Link>
