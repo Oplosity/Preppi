@@ -2,43 +2,30 @@ const { userLogin, userRegister } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
+
+// For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const port = 3001
 
 // User login/register
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     const type = req.query.type;
     let response;
 
-    if (type === "login") {
-        response = userLogin(req.body);
-
-    } else if (type === "register") {
-        response = userRegister(req.body);
-
+    if (type === "register") {
+        console.log("Received register request.")
+        const result = await userRegister(req.body);
+        res.status(result.status).send(result.data || result.message);
+    } else if (type === "login") {
+        console.log("Received login request.")
+        const result = await userLogin(req.body);
+        res.status(result.status).send(result.data || result.message);
     } else {
-        response = type + " is not a recognized value for query 'users'! Did you mean login/register?";
+        res.status(400).send(type + " is not a recognized value for query 'users'! Did you mean register/login?");
     }
-    
-    res.send(response);
-})
+});
 
-// quizzes
-app.get('/quizzes', (req, res) => {
-    const subject = req.query.subject;
-    let subjects = ['math', 'biology', 'english', 'physics', 'chemistry', 'history', 'geography', 'computer science', 'information technology', 'statistics', 'economics', 'accounting', 'business studies', 'foreign languages', 'literature', 'philosophy', 'psychology', 'sociology', 'anthropology', 'linguistics', 'philosophy of science', 'epistemology', 'logic'];
-    let response;
-
-    if (subjects.includes(subject)) {
-        response = 'you chose ' + subject;
-    } else {
-        response = subject + ' is not an accepted subject type! List of accepted subject types: ' + subjects;
-    }
-
-    res.send(response);
-})
-
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
+// Listen for requests on port 3001
+app.listen(3001, () => {
+    console.log(`App listening on port 3001`)
 })
