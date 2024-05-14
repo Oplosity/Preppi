@@ -1,23 +1,24 @@
+const { userLogin, userRegister } = require('./functions.js');
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3001
 
-// User login
+// User login/register
 app.post('/users', (req, res) => {
     const type = req.query.type;
-    const username = req.body.username;
-    const password = req.body.password;
-    const email = req.body.email;
     let response;
 
     if (type === "login") {
-        // Function to handle login
+        response = userLogin(req.body);
 
     } else if (type === "register") {
-        // Function to handle register
+        response = userRegister(req.body);
 
     } else {
-        response = type + " is not a recognized parameter! Did you mean login/register?";
+        response = type + " is not a recognized value for query 'users'! Did you mean login/register?";
     }
     
     res.send(response);
