@@ -59,6 +59,11 @@ app.get('/quizzes', async (req, res) => {
     }
 });
 
+// Create a new quiz
+app.post('/quizzes', async (req, res) => {
+
+});
+
 // Listen for requests on port 3001
 app.listen(3001, () => {
     console.log(`App listening on port 3001`)

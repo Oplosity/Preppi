@@ -134,4 +134,8 @@ async function getQuizzes(subject) {
     }
 }
 
+async function createQuiz(quiz_data) {
+
+}
+
 module.exports = { userLogin, userRegister, getQuizzes };
