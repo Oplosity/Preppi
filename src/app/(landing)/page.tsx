@@ -101,19 +101,19 @@ export default function Home() {
                     <AccordionItem value="item-3">
                         <AccordionTrigger>How do I report an issue?</AccordionTrigger>
                         <AccordionContent>
-                        Send an issue to our <Link className="text-blue-700 hover:text-blue-600" href="https://github.com/Oplosity/preppi">github</Link>. We will make sure to avoid responding for as long as possible.
+                        Send an issue to our <Link className="text-blue-700 hover:text-blue-800" href="https://github.com/Oplosity/preppi">github</Link>. We will make sure to avoid responding for as long as possible.
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-4">
                         <AccordionTrigger>How do I keep track of my progress?</AccordionTrigger>
                         <AccordionContent>
-                        Our intuitive user interface makes it possible for all users to have no idea what is happening.
+                        Our intuitive user interface makes it possible for all users to have no idea what is
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-5">
                         <AccordionTrigger>Is Preppi accessible?</AccordionTrigger>
                         <AccordionContent>
-                        Yes. Preppi adheres to the WAI-ARIA design pattern.
+                        Yes, Preppi adheres to the WAI-ARIA design pattern.
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
