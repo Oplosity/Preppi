@@ -1,9 +1,5 @@
 # Preppi Project README
 
-## Description
-
-This project is designed to facilitate the creation, management, and retrieval of quizzes for educational purposes. It provides endpoints for user authentication, quiz creation, and quiz retrieval, allowing users to interact with the system via HTTP requests.
-
 ## Requirements
 
 ### Packages
