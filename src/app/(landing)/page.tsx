@@ -46,7 +46,7 @@ export default function Home() {
                     <Button>Join</Button>
                 </div>
                 <div className="md:flex-1">
-                    <Image src="/landing/online-learning.png" alt="" width={1620} height={960} quality={100} /> 
+                    <Image src="/landing/online-learning.svg" alt="" width={1620} height={960} quality={100} /> 
                 </div>
             </div>
         </div>
