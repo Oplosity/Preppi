@@ -58,8 +58,8 @@ const components: { title: string; href: string; description: string }[] = [
 
 export default function Header() {
     return(
-        <>
-            <header className="flex items-center standard-page">
+        <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
+            <header className="flex items-center standard-page-padding">
                 <Link href="/" className="mr-6">
                     <Image src="logo.svg" height={30.24} width={105.84} alt="Preppi logo" />
                 </Link>
@@ -116,13 +116,15 @@ export default function Header() {
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className="grow text-right">
-                    <Button variant="halfTransparent" className="hidden sm:inline-block mr-3">Log in</Button>
-                    <Button className="mr-3">Sign up</Button>
+                    <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">
+                    <Link href="/auth/log-in">Log in</Link>
+                    </Button>
+                    <Button asChild className="mr-3"><Link href="/auth/sign-up">Sign up</Link></Button>
                     {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
                     <NavigationMenu className="inline-block md:hidden">
                         <NavigationMenuList>
                             <NavigationMenuItem>
-                                <NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger>
+                                <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
                                 <NavigationMenuContent>
                                     <NavigationMenuLink>Link</NavigationMenuLink>
                                 </NavigationMenuContent>
@@ -131,7 +133,7 @@ export default function Header() {
                     </NavigationMenu>
                 </div>
             </header>
-        </>
+        </div>
     )
 }
 

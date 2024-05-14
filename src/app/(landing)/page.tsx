@@ -39,8 +39,7 @@ function Quiz({src, alt, title, description, tags}: {src: string, alt: string, t
 export default function Home() {
   return (
     <main className="">
-        <div className="w-full min-h-[80vh] md:h-[80vh] bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover customCorner flex flex-col">
-            <Header/>
+        <div className="w-full min-h-[70vh] md:h-[70vh] bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover customCorner flex flex-col">
             <div className="standard-page flex-col-reverse md:flex-row flex h-full space-y-8 space-y-reverse md:space-x-16 items-center">
                 <div className="md:flex-1">
                     <h1 className={`${bungee.className} text-white text-2xl xl:text-3xl mb-3 text-pretty`}>BOOST YOUR EXAM PREP WITH TAILORED QUIZZES AND PERSONALIZED STUDY PLANS FROM PREPPI!</h1>

@@ -24,8 +24,13 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body className={inter.className}>
-            {children}
-            <Footer />
+            <div className="overflow-hidden">
+                <Header/>
+                <div className="overflow-hidden mt-[106px]">
+                    {children}
+                </div>
+                <Footer />
+            </div>
         </body>
     </html>
   );
