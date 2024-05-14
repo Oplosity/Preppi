@@ -94,4 +94,27 @@ async function userLogin(body) {
     }
 }
 
-module.exports = { userLogin, userRegister };
+async function getQuizzes(subject) {
+    try {
+        // Look for quizzes with the specified subject
+        const quizzes = await db.query(`
+        SELECT quiz_name, quiz_desc, quizzes, subject
+        FROM preppi_schema.users 
+        WHERE (subject = $1)`, [subject]);
+
+        if (quizzes.rows > 0) {
+            console.log("Successfully got quizzes.");
+            return { status: 200, message: quizzes.rows };
+
+        } else {
+            console.log("Successfully got quizzes. However, none exist.");
+            return { status: 200, message: "No quizzes for that subject exist yet!" };
+        }
+
+    } catch (error) {
+        console.error("Error during getting quizzes for subject " + subject + ':', error);
+        return { status: 500, message: "Internal Server Error" };
+    }
+} 
+
+module.exports = { userLogin, userRegister, getQuizzes };
