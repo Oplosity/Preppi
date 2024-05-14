@@ -3,8 +3,8 @@ const app = express()
 const port = 3001
 
 // User login
-app.post('/users/:type', (req, res) => {
-    const type = req.params.type;
+app.post('/users', (req, res) => {
+    const type = req.query.type;
     const username = req.body.username;
     const password = req.body.password;
     const email = req.body.email;
@@ -24,15 +24,15 @@ app.post('/users/:type', (req, res) => {
 })
 
 // quizzes
-app.get('/quizzes/:subject', (req, res) => {
-    const subject = req.params.subject;
+app.get('/quizzes', (req, res) => {
+    const subject = req.query.subject;
     let subjects = ['math', 'biology', 'english', 'physics', 'chemistry', 'history', 'geography', 'computer science', 'information technology', 'statistics', 'economics', 'accounting', 'business studies', 'foreign languages', 'literature', 'philosophy', 'psychology', 'sociology', 'anthropology', 'linguistics', 'philosophy of science', 'epistemology', 'logic'];
     let response;
 
     if (subjects.includes(subject)) {
         response = 'you chose ' + subject;
     } else {
-        response = subject + ' is not a recognized parameter! List of accepted parameters: ' + subjects;
+        response = subject + ' is not an accepted subject type! List of accepted subject types: ' + subjects;
     }
 
     res.send(response);
