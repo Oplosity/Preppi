@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-theme-orange-500 text-primary-foreground hover:bg-theme-orange-700",
         halfTransparent: "bg-white/25 text-primary-foreground hover:bg-white/45",
-        sidebarButton: "w-full mb-2 justify-start text-primary-foreground hover:bg-theme-orange-700",
+        sidebarButton: "w-full mb-2 justify-start text-primary-foreground hover:bg-theme-orange-600",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:

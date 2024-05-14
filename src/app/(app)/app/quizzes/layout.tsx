@@ -22,10 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <div className="">
-        <div className="fixed w-64 h-screen mt-[-74px] pt-[74px]">
+        <div className="fixed w-56 h-screen mt-[-74px] pt-[74px]">
             <QuizzesSidebar />
         </div>
-        <div className="ml-64 overflow-hidden">
+        <div className="ml-56 overflow-hidden">
             <div className="standard-app">
                 {children}
             </div>
