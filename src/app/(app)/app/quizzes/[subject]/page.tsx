@@ -4,6 +4,17 @@ import { Progress } from "@/components/ui/progress"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 
+import type { Metadata } from 'next'
+
+export async function generateMetadata(
+  { params }: { params: { subject: string } }
+): Promise<Metadata> {
+  return {
+    title: `${params.subject} quizzes - Preppi`,
+    description: `Discover ${params.subject} quizzes on Preppi!`
+  }
+}
+
 function QuizOption({name, description, completed, id}: {name: string, description: string, completed: number, id: string}){
   return(
     <div className="group">

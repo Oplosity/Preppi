@@ -8,6 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 const poppins = Poppins({ subsets: ["latin"], weight: "400" });
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Login - Preppi',
+  description: 'Login into your account to personalize your experience on Preppi.',
+}
+
 export default function Home() {
   return (
     <div className="flex overflow-hidden h-screen">
