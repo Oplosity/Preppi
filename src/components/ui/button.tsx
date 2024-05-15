@@ -12,6 +12,8 @@ const buttonVariants = cva(
         default: "bg-theme-orange-500 text-primary-foreground hover:bg-theme-orange-700",
         halfTransparent: "bg-white/25 text-primary-foreground hover:bg-white/45",
         sidebarButton: "w-full mb-2 justify-start text-primary-foreground hover:bg-theme-orange-600",
+        quizUnselectedButton: "w-full mb-2 justify-start text-primary-foreground bg-black/15 hover:bg-black/30",
+        quizSelectedButton: "w-full mb-2 justify-start text-primary-foreground bg-theme-orange-500 hover:bg-theme-orange-600",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:

@@ -17,7 +17,7 @@ export default function Page ({ params }: { params: { id: string } }) {
         <p>This is a quiz with id of {params.id}</p>
         <p className="text-neutral-600 group-hover:text-neutral-900">{30}% completed</p>
         <Progress value={30} />
-        <Button>Start quiz</Button>
+        <Button asChild><Link href={`/app/quiz/${params.id}/run/`}>Start quiz</Link></Button>
         <Button>Start group quiz</Button>
       </div>
     )

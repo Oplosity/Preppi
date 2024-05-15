@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <body className={inter.className}>
+        <body className={`${inter.className}`}>
             <div className="overflow-hidden">
                 <AppHeader />
                 <div className="overflow-hidden mt-[74px]">
