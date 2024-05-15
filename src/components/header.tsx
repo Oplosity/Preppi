@@ -18,42 +18,27 @@ import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 
-const components: { title: string; href: string; description: string }[] = [
+const components: { name: string; rank: number; score: number }[] = [ //I guess this dropdown can be a leaderboard
     {
-      title: "Alert Dialog",
-      href: "/docs/primitives/alert-dialog",
-      description:
-        "A modal dialog that interrupts the user with important content and expects a response.",
+      name: "test1",
+      rank: 1,
+      score: 20000,
     },
     {
-      title: "Hover Card",
-      href: "/docs/primitives/hover-card",
-      description:
-        "For sighted users to preview content available behind a link.",
+      name: "test2",
+      rank: 2,
+      score: 19000,
     },
     {
-      title: "Progress",
-      href: "/docs/primitives/progress",
-      description:
-        "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+      name: "test3",
+      rank: 3,
+      score: 18000,
     },
     {
-      title: "Scroll-area",
-      href: "/docs/primitives/scroll-area",
-      description: "Visually or semantically separates content.",
-    },
-    {
-      title: "Tabs",
-      href: "/docs/primitives/tabs",
-      description:
-        "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-    },
-    {
-      title: "Tooltip",
-      href: "/docs/primitives/tooltip",
-      description:
-        "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-    },
+      name: "test4",
+      rank: 4,
+      score: 17000,
+    }
   ]
 
 export default function Header() {
@@ -66,52 +51,25 @@ export default function Header() {
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger>Quizzes</NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                {components.map((component) => (
-                                    <ListItem
-                                    key={component.title}
-                                    title={component.title}
-                                    href={component.href}
-                                    >
-                                    {component.description}
-                                    </ListItem>
-                                ))}
-                                </ul>
-                            </NavigationMenuContent>
+                            <NavigationMenuTrigger><Link href="#quizzes">Quizzes</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
                             <NavigationMenuContent>
-                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[600px] ">
                                 {components.map((component) => (
                                     <ListItem
-                                    key={component.title}
-                                    title={component.title}
-                                    href={component.href}
+                                    key={component.name}
+                                    title={component.rank.toString()+ ". " + component.name + " Score: "+ component.score.toString() }
                                     >
-                                    {component.description}
+                                    {component.score.toString()}
                                     </ListItem>
                                 ))}
                                 </ul>
                             </NavigationMenuContent>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger>About</NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                {components.map((component) => (
-                                    <ListItem
-                                    key={component.title}
-                                    title={component.title}
-                                    href={component.href}
-                                    >
-                                    {component.description}
-                                    </ListItem>
-                                ))}
-                                </ul>
-                            </NavigationMenuContent>
+                            <NavigationMenuTrigger><Link href="about">About</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
@@ -147,7 +105,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-1 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
           {...props}
