@@ -72,13 +72,24 @@ export default function Home() {
                 alt="Biology illustration"
                 title="Biology"
                 description="Ready to test your skills? Take the quiz to evaluate your knowledge and see where you stand. It&apos;s a fun and easy way to challenge yourself and learn something new!"
-                tags={[{title: "hi", key: "biology-hi", variant: "lightOrange"}]} />
+                tags={[
+                    {title: "Ecology", key: "biology-ecology", variant: "lightBlue"},
+                    {title: "Genetics", key: "biology-genetics", variant: "lightYellow"},
+                    {title: "Microbiology", key: "biology-microbiology", variant: "lightPink"},
+                    {title: "Marine biology", key: "biology-marine_biology", variant: "lightGreen"},
+                    {title: "Cell biology", key: "biology-cell_biology", variant: "lightOrange"},
+                    ]} />
                 <Quiz
                 src="/landing/quizzes/robotics.jpg"
                 alt="Robotics illustration"
                 title="Robotics"
                 description="Ready to test your skills? Take the quiz to evaluate your knowledge and see where you stand. It&apos;s a fun and easy way to challenge yourself and learn something new!"
-                tags={[{title: "hi", key: "robotics-hi", variant: "lightOrange"}]} />
+                tags={[
+                    {title: "Programming", key: "robotics-programming", variant: "lightBlue"},
+                    {title: "Autonomous vehicles", key: "robotics-Autonomous_vehicles", variant: "lightOrange"},
+                    {title: "Agricultural robotics", key: "robotics-agricultural_robotics", variant: "lightGreen"},
+                    {title: "Humanoid robots", key: "robotics-humanoid_robots", variant: "lightYellow"},
+                    ]} />
             </div>
         </div>
         <div className="standard-page">
