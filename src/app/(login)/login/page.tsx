@@ -15,7 +15,7 @@ export default function Home() {
         <Image src="logo-black.svg" height={45} width={157.5} alt="Preppi logo" className="mb-20 ml-[10%]"/>
         <div className="self-center">
           <h2 className={`${poppins.className} text-black text-4xl mb-3 text-pretty`}>Login</h2>
-          <h1 className={`${poppins.className} text-black text-md mb-2 text-pretty`}>If you don`t have an account<br/>You can <Button variant="link" size={"links"} className="text-md">Sign up here!</Button></h1>
+          <h1 className={`${poppins.className} text-black text-md mb-2 text-pretty`}>If you don`t have an account<br/>You can <Button variant="link" size={"links"} className="text-md"><Link href={"/signup"}>Sign up here!</Link></Button></h1>
           <p className={`${poppins.className} text-gray-500 mb-1 text-pretty`}>Email</p>
           <Input></Input>
           <p className={`${poppins.className} text-gray-500 mb-1 text-pretty`}>Password</p>
