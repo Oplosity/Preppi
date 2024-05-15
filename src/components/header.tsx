@@ -46,7 +46,7 @@ export default function Header() {
         <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
             <header className="flex items-center standard-page-padding">
                 <Link href="/" className="mr-6">
-                    <Image src="logo.svg" height={30.24} width={105.84} alt="Preppi logo" />
+                    <Image src="/logo.svg" height={30.24} width={105.84} alt="Preppi logo" />
                 </Link>
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>

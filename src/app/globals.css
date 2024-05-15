@@ -83,8 +83,16 @@
         @apply m-8;
     }
 
+    .standard-app{
+        @apply m-4;
+    }
+
     .standard-page-padding{
         @apply p-8;
+    }
+
+    .standard-app-padding{
+        @apply p-4;
     }
     
     @screen sm {
