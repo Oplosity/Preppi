@@ -62,7 +62,7 @@ export default function Page({ params }: { params: { id: string; question: strin
       </div>
       <div className="flex justify-end">
         <Button onClick={() => {
-          setUserAnswers(userAnswers => [...userAnswers, "asd"])
+          setUserAnswers((prevUserAnswers: (string | undefined)[]) => [...prevUserAnswers, "asd"])
         }}>asd</Button>
         <Button asChild><Link href={`/app/quiz/${params.id}/run/${Number(params.question) + 1}`}>Next</Link></Button>
       </div>
