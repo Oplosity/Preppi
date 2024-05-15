@@ -117,9 +117,9 @@ export default function AppHeader() {
                 </NavigationMenu>
                 <div className="grow text-right">
                     <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">
-                    <Link href="/auth/log-in">Log in</Link>
+                    <Link href="/login">Log in</Link>
                     </Button>
-                    <Button asChild className="mr-3"><Link href="/auth/sign-up">Sign up</Link></Button>
+                    <Button asChild className="mr-3"><Link href="/signup">Sign up</Link></Button>
                     {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
                     <NavigationMenu className="inline-block md:hidden">
                         <NavigationMenuList>

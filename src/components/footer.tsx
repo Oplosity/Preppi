@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function Footer(){
     return(
         <footer className="">
-            <div className="bg-theme-violet-700 flex text-neutral-100">
+            <div className="bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover flex text-neutral-100">
                 <div className="standard-page flex flex-col md:flex-row md:items-end">
                     <div className="grow">
                         <div className="flex flex-col gap-4">
@@ -56,7 +56,7 @@ export default function Footer(){
                     </div>
                 </div>
             </div>
-            <Link href="#" className="bg-theme-orange-500 hover:bg-theme-orange-700 flex">
+            <Link href="#" className="bg-theme-orange-500 hover:bg-theme-orange-700 transition-colors flex">
                 <div className="standard-page text-right">
                     <span className="text-white font-medium text-lg">Go to top &nbsp; <FontAwesomeIcon icon={faArrowUp} /></span>
                 </div>

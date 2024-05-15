@@ -53,7 +53,7 @@ export default function Home() {
         </div>
         <div className="standard-page">
             <h2 className="text-2xl font-extrabold" id="quizzes">Quizzes</h2>
-            <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 justify-between">
+            <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 justify-between">
                 <Quiz
                 src="/landing/quizzes/math.jpg"
                 alt="Mathematics illustration"

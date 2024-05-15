@@ -24,9 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body className={inter.className}>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden flex flex-col min-h-screen">
                 <Header/>
-                <div className="overflow-hidden mt-[106px]">
+                <div className="overflow-hidden mt-[106px] grow">
                     {children}
                 </div>
                 <Footer />
