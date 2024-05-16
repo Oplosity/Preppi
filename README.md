@@ -38,7 +38,7 @@
     - This is for creating a new quiz
     - **Required data in body**: quiz_name (string), quiz_desc (string), questions (JSONB) (example in example/example.json), subject (string)
 
-### Get requests | Get Quizzes, Get Scores
+### Get requests | Get Quizzes, Get Questions
 
 - **Get Quizzes**: `http://localhost:3001/quizzes?subject=searchedsubject`
     - This is for getting the quizzes within a specific subject (e.g., math, biology, etc...)
