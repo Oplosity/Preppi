@@ -1,4 +1,4 @@
-const { userLogin, userRegister, getQuizzes } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -6,6 +6,8 @@ const app = express()
 // For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+    // POST REQUESTS //
 
 // User login/register
 app.post('/users', async (req, res) => {
@@ -24,7 +26,16 @@ app.post('/users', async (req, res) => {
     }
 });
 
-// Get all quizzes for a specific subject
+// Create a new quiz
+app.post('/quizzes', async (req, res) => {
+    console.log("Received request to create quiz")
+    const result = await createQuiz(req.body);
+    res.status(result.status).send(result.data || result.message);
+});
+
+    // GET REQUESTS //
+
+// Get all quizzes for either a specific subject, or in general
 app.get('/quizzes', async (req, res) => {
     const subject = req.query.subject;
     const subjects = [
@@ -49,9 +60,16 @@ app.get('/quizzes', async (req, res) => {
         "Psychology"
     ];
 
-    if (subjects.includes(subject)) {
+    if (subject === undefined) {
+        // Get all questions
         console.log("Received request to get quizzes.")
-        const result = await getQuizzes(subject);
+        const result = await getQuizzes(subject, true);
+        res.status(result.status).send(result.data || result.message);
+
+    } else if (subjects.includes(subject)) {
+        // Get questions from a specific subject
+        console.log("Received request to get quizzes.")
+        const result = await getQuizzes(subject, false);
         res.status(result.status).send(result.data || result.message);
 
     } else {
@@ -59,9 +77,19 @@ app.get('/quizzes', async (req, res) => {
     }
 });
 
-// Create a new quiz
-app.post('/quizzes', async (req, res) => {
+// Get questions for a quiz
+app.get('/quizzes/questions', async (req, res) => {
+    const id = req.query.quiz_id;
 
+
+    if (id !== undefined && Number.isInteger(id)) {
+        console.log("Received request to get questions.")
+        const result = await getQuestions(id);
+        res.status(result.status).send(result.data || result.message);
+    } else {
+        console.log("No id specified for request to get questions.")
+        res.status(400).send("Invalid id! Please ensure that the id is an integer.");  
+    }
 });
 
 // Listen for requests on port 3001

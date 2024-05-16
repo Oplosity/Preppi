@@ -32,13 +32,13 @@ async function userRegister(body) {
 
         // Try to insert given data to table
         try {
-            result = await db.query(`
+            await db.query(`
             INSERT INTO preppi_schema.users (username, password, email, admin)
             VALUES ($1, $2, $3, $4)
         `, [username, hashedPassword, email, false]);
 
         } catch (e) {
-            console.error(e)
+            console.error("Error inserting data into database:", error);
             return { status: 500, data: "Server failed to connect to database" };
         }
 
@@ -94,24 +94,63 @@ async function userLogin(body) {
     }
 }
 
-async function getQuizzes(subject) {
+async function createQuiz(body) {
+    quiz_name = body.quiz_name;
+    quiz_desc = body.quiz_desc;
+    questions = body.questions;
+    subject = body.subject;
+
+    // Ensure that all required data is received
+    if (quiz_name !== undefined && quiz_desc !== undefined && questions !== undefined && subject !== undefined) {
+        
+        // Try putting data into database
+        try {
+            await db.query(`
+            INSERT INTO preppi_schema.quizzes (quiz_name, quiz_desc, questions, subject)
+            VALUES ($1, $2, $3, $4)
+        `, [quiz_name, quiz_desc, questions, subject]);
+
+        } catch (error) {
+            console.log("Error inserting data to database:", error);
+            return { status: 500, message: "Server failed to connect to database" };
+        }
+
+        console.log("Successfully created quiz.");
+        return { status: 200, message: "Successfully created quiz!" };
+
+    } else {
+        console.log("Request to create quiz was missing info.");
+        return { status: 400, message: "Please ensure that quiz_name, quiz_desc, questions and subject contain data!" };
+    }
+}
+
+async function getQuizzes(subject, empty) {
     try {
+        if (!empty) {
         // Look for quizzes with the specified subject
         const quizzes = await db.query(`
-        SELECT quiz_name, quiz_desc, questions, subject
+        SELECT id, quiz_name, quiz_desc, subject
         FROM preppi_schema.quizzes 
         WHERE subject = $1`, [subject]);
+        } else {
+        // Get all quizzes
+        const quizzes = await db.query(`
+        SELECT id, quiz_name, quiz_desc, subject
+        FROM preppi_schema.quizzes`);
+        }
 
-        // Check if any quizzes for that subject exist yet
+
+        // Check if any quizzes exist
         if (quizzes.rows.length > 0) {
             console.log("Successfully got quizzes.");
             // Format quizzes
             const formattedQuizzes = quizzes.rows.map(row => {
                 try {
+                    // Return the quizzes with their id
                     return {
+                        quiz_id: row.id,
                         quiz_name: row.quiz_name,
                         quiz_desc: row.quiz_desc,
-                        questions: row.questions,
                         subject: row.subject
                     };
                 } catch (error) {
@@ -125,17 +164,45 @@ async function getQuizzes(subject) {
 
         } else {
             console.log("Successfully got quizzes. However, none exist.");
-            return { status: 200, message: "No quizzes for that subject exist yet!" };
+            if (!empty) {
+                return { status: 200, message: "No quizzes for that subject exist yet!" };
+            } else {
+                return { status: 200, message: "No quizzes exist yet!" };
+            }
         }
 
     } catch (error) {
-        console.error("Error during getting quizzes for subject " + subject + ':', error);
+        if (!empty) {
+            console.error("Error during getting quizzes for subject " + subject + ':', error);
+        } else {
+            console.error("Error during getting all quizzes:", error)
+        }
         return { status: 500, message: "Internal Server Error" };
     }
 }
 
-async function createQuiz(quiz_data) {
+async function getQuestions(id) {
+    try {
+        // Look for questions in a specific quiz
+        const questions = await db.query(`
+        SELECT questions
+        FROM preppi_schema.quizzes 
+        WHERE id = $1`, [id]);
 
+        // Check if any questions for that quiz exist
+        if (questions.rows.length > 0) {
+            console.log("Successfully got and sent existing questions");
+            return { status: 200, message: questions.rows };
+
+        } else {
+            console.log("Successfully got questions. However, none exist.");
+            return { status: 200, message: "No questions for that quiz exist! Either you provided an invalid id, or there was an error when creating questions for that quiz." };
+        }
+
+    } catch (error) {
+        console.error("Error during getting questions for quiz:", error);
+        return { status: 500, message: "Internal Server Error" };
+    }
 }
 
-module.exports = { userLogin, userRegister, getQuizzes };
+module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions };
