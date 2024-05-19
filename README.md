@@ -62,7 +62,7 @@
     - Returns either true or false depending on if the user is an admin or not
 
 - **Get Quiz Scores**: `http://localhost:3001/scores/quizzes?quiz_id=quiz_id`
-    - This is for getting scores of users
+    - This is for getting scores of quizzes
     - `'quiz_id'` is the quiz whose scores we want
     - if `'quiz_id'` is not defined, returns all scores from all quizzes instead
     - Returns username (string), quiz_name (string) and score (int)
