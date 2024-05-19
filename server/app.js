@@ -82,7 +82,7 @@ app.get('/quizzes/questions', async (req, res) => {
     const id = req.query.quiz_id;
 
 
-    if (id !== undefined && Number.isInteger(id)) {
+    if (id !== "") {
         console.log("Received request to get questions.")
         const result = await getQuestions(id);
         res.status(result.status).send(result.data || result.message);

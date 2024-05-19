@@ -125,17 +125,18 @@ async function createQuiz(body) {
 }
 
 async function getQuizzes(subject, empty) {
+    let quizzes;
     try {
         if (!empty) {
         // Look for quizzes with the specified subject
-        const quizzes = await db.query(`
-        SELECT id, quiz_name, quiz_desc, subject
+        quizzes = await db.query(`
+        SELECT quiz_id, quiz_name, quiz_desc, subject
         FROM preppi_schema.quizzes 
         WHERE subject = $1`, [subject]);
         } else {
         // Get all quizzes
-        const quizzes = await db.query(`
-        SELECT id, quiz_name, quiz_desc, subject
+        quizzes = await db.query(`
+        SELECT quiz_id, quiz_name, quiz_desc, subject
         FROM preppi_schema.quizzes`);
         }
 
@@ -187,7 +188,7 @@ async function getQuestions(id) {
         const questions = await db.query(`
         SELECT questions
         FROM preppi_schema.quizzes 
-        WHERE id = $1`, [id]);
+        WHERE quiz_id = $1`, [id]);
 
         // Check if any questions for that quiz exist
         if (questions.rows.length > 0) {
