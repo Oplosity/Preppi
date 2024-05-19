@@ -24,7 +24,7 @@
 
 ## Requests
 
-### Post requests | Login, Register, Create Quiz
+### Post requests | Login, Register, Create Quiz, Add score
 
 - **Login**: `http://localhost:3001/users?type=login`
     - This is for logging in to an existing account
@@ -39,12 +39,16 @@
     - **Required data in body**: quiz_name (string), quiz_desc (string), questions (JSONB) (example in example/example.json), subject (string), username (string)
     - `'username'` is for ensuring that only authorized users can create quizzes
 
-### Get requests | Get Quizzes, Get Questions, Authenticate user
+- **Add Score**: `http://localhost:3001/scores`
+    - This is for adding scores users get from quizzes
+    - **Required data in body**: username (string), quiz_id (int)
+
+### Get requests | Get Quizzes, Get Questions, Authenticate user, Get scores, Get Specific User's Scores
 
 - **Get Quizzes**: `http://localhost:3001/quizzes?subject=searchedsubject`
     - This is for getting the quizzes within a specific subject (e.g., math, biology, etc...)
     - `'searchedsubject'` is the subject that you want to search for, replace it with some subject
-    - if `'searchedsubject'` is left empty, returns all quizzes instead
+    - if `'searchedsubject'` is not defined, returns all quizzes instead
     - Returns quiz id (int), name (string), description (string) and subject (string)
 
 - **Get Questions**: `http://localhost:3001/quizzes/questions?quiz_id=quizid`
@@ -56,6 +60,17 @@
     - This is for checking whether the user is an admin or not
     - `'username'` is the user to be checked
     - Returns either true or false depending on if the user is an admin or not
+
+- **Get Quiz Scores**: `http://localhost:3001/scores/quizzes?quiz_id=quiz_id`
+    - This is for getting scores of users
+    - `'quiz_id'` is the quiz whose scores we want
+    - if `'quiz_id'` is not defined, returns all scores from all quizzes instead
+    - Returns username (string), quiz_name (string) and score (int)
+
+- **Get A Specific User's Scores**: `http://localhost:3001/scores/users?username=username`
+    - This is for getting scores of users
+    - `'username'` is the user whose scores we want
+    - Returns quiz_name (string) and score (int)
 
 ### Put requests | Edit Quiz
 

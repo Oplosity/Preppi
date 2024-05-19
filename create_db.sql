@@ -77,7 +77,8 @@ ALTER SEQUENCE preppi_schema.quizzes_quiz_id_seq OWNED BY preppi_schema.quizzes.
 CREATE TABLE preppi_schema.scores (
     user_id bigint NOT NULL,
     quiz_id bigint NOT NULL,
-    score bigint NOT NULL
+    score bigint NOT NULL,
+    CONSTRAINT unique_user_quiz UNIQUE (user_id, quiz_id)
 );
 
 

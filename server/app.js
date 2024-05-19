@@ -1,4 +1,4 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -30,6 +30,13 @@ app.post('/users', async (req, res) => {
 app.post('/quizzes', async (req, res) => {
     console.log("Received request to create quiz")
     const result = await createQuiz(req.body);
+    res.status(result.status).send(result.data || result.message);
+});
+
+// Add scores
+app.post('/scores', async (req, res) => {
+    console.log("Received request to add score")
+    const result = await addScore(req.body);
     res.status(result.status).send(result.data || result.message);
 });
 
@@ -102,6 +109,38 @@ app.get('/quizzes/questions', async (req, res) => {
         res.status(400).send("Invalid id! Please ensure that the id is an integer.");  
     }
 });
+
+// Get quiz scores
+app.get('/scores/quizzes', async (req, res) => {
+    const quiz_id = req.query.quiz_id;
+
+    if (quiz_id  === undefined ) {
+        console.log("Received request to get scores of all quizzes.")
+        const result = await getQuizScores(quiz_id, true);
+        res.status(result.status).send(result.data || result.message);    
+
+    } else {
+        console.log("Received request to get scores for a specific quiz.")
+        const result = await getQuizScores(quiz_id, false);
+        res.status(result.status).send(result.data || result.message);
+    }
+});
+
+// Get user scores
+app.get('/scores/users', async (req, res) => {
+    const username = req.query.username;
+
+    if (username === undefined ) {
+        console.log("Missing username.")
+        res.status(400).send("Request is missing username!");    
+
+    } else {
+        console.log("Received request to get user scores.")
+        const result = await getUserScores(username);
+        res.status(result.status).send(result.data || result.message);
+    }
+});
+
 
     // PUT REQUESTS //
 

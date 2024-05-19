@@ -122,6 +122,130 @@ async function checkUser(query) {
     }
 }
 
+// Add score from quiz to user
+async function addScore(body) {
+    username = body.username;
+    quiz_id = body.quiz_id;
+    score = body.score;
+    let user_id;
+
+    try {
+        if (username !== "" && quiz_id !== "") {
+            // Try getting user_id
+            try {
+                user_id = await db.query(`
+                    SELECT user_id FROM preppi_schema.users
+                    WHERE username = $1
+                `, [username]);
+
+            } catch (error) {
+                console.error("Error getting user_id:", error);
+                return { status: 500, message: "Internal Server Error" };
+            }
+
+            // Check if any username matched
+            if (user_id.rows.length === 0) {
+                console.error("Invalid username");
+                return { status: 400, message: "Invalid username!" };
+            } else {
+                user_id = user_id.rows[0].user_id;
+                console.log("Got user id")
+            }
+
+            // Try adding scores
+            try {
+                await db.query(`
+                    INSERT INTO preppi_schema.scores (user_id, quiz_id, score)
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT (user_id, quiz_id) DO UPDATE
+                    SET score = EXCLUDED.score
+                `, [user_id, quiz_id, score]);
+
+                console.log("Inserted score successfully")
+
+                console.log("Successfully added score.");
+                return { status: 400, message: "Successfully updated score!" };
+
+            } catch (error) {
+                console.error("Error adding score:", error);
+                return { status: 500, message: "Internal Server Error " };
+            }
+
+        } else {
+            console.error("Request is missing data");
+            return { status: 400, message: "Please enter both username and quiz_id!" };
+        }
+    } catch (error) {
+        console.error("Error adding scores:", error);
+            return { status: 500, message: "Internal Server Error" };
+    }
+}
+
+// Get quiz scores
+async function getQuizScores(quiz_id, empty) {
+    if (!empty) { // If quiz_id was given
+        try {
+            scores = await db.query(`
+                SELECT u.username, q.quiz_name, s.score
+                FROM preppi_schema.scores s
+                JOIN preppi_schema.users u ON s.user_id = u.user_id
+                JOIN preppi_schema.quizzes q ON s.quiz_id = q.quiz_id
+                WHERE s.quiz_id = $1
+            `, [quiz_id]);
+
+        } catch (error) {
+            console.error("Error getting scores:", error);
+            return { status: 500, message: "Internal Server Error" };
+        }
+
+        console.log("Successfully got scores!");
+        return { status: 200, message: scores.rows };
+
+    } else { // If no quiz_id was given
+        try {
+            scores = await db.query(`
+                SELECT u.username, q.quiz_name, s.score
+                FROM preppi_schema.scores s
+                JOIN preppi_schema.users u ON s.user_id = u.user_id
+                JOIN preppi_schema.quizzes q ON s.quiz_id = q.quiz_id
+            `);
+
+        } catch (error) {
+            console.error("Error getting scores:", error);
+            return { status: 500, message: "Internal Server Error" };
+        }
+
+        console.log("Successfully got scores!");
+        return { status: 200, message: scores.rows };
+
+    }
+}
+
+// Get user scores
+async function getUserScores(username) {
+    try {
+        scores = await db.query(`
+            SELECT q.quiz_name, s.score
+            FROM preppi_schema.scores s
+            JOIN preppi_schema.quizzes q ON s.quiz_id = q.quiz_id
+            JOIN preppi_schema.users u ON s.user_id = u.user_id
+            WHERE u.username = $1
+        `, [username]);
+
+    } catch (error) {
+        console.error("Error getting scores:", error);
+        return { status: 500, message: "Internal Server Error" };
+    }
+
+    if (scores.rows.length === 0) {
+        console.log("User has no saved scores");
+        return { status: 200, message: "User has no scores" };
+    }
+
+    console.log("Successfully got scores!");
+    return { status: 200, message: scores.rows };
+}
+
 // Create quiz
 async function createQuiz(body) {
     quiz_name = body.quiz_name;
@@ -288,7 +412,7 @@ async function deleteQuiz(body) {
     }
 }
 
-// Get quizzes (either all or only from specific subject)
+// Get quizzes
 async function getQuizzes(subject, empty) {
     let quizzes;
     try {
@@ -347,6 +471,7 @@ async function getQuizzes(subject, empty) {
     }
 }
 
+// Get questions
 async function getQuestions(id) {
     try {
         // Look for questions in a specific quiz
@@ -371,4 +496,4 @@ async function getQuestions(id) {
     }
 }
 
-module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz };
+module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores };
