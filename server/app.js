@@ -1,4 +1,4 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -93,7 +93,6 @@ app.get('/quizzes', async (req, res) => {
 app.get('/quizzes/questions', async (req, res) => {
     const id = req.query.quiz_id;
 
-
     if (id !== "") {
         console.log("Received request to get questions.")
         const result = await getQuestions(id);
@@ -102,6 +101,24 @@ app.get('/quizzes/questions', async (req, res) => {
         console.log("No id specified for request to get questions.")
         res.status(400).send("Invalid id! Please ensure that the id is an integer.");  
     }
+});
+
+    // PUT REQUESTS //
+
+// Edit quiz
+app.put('/quizzes', async (req, res) => {
+    console.log("Received request to edit quiz.")
+        const result = await editQuiz(req.body);
+        res.status(result.status).send(result.data || result.message);
+});
+
+    // DELETE REQUESTS //
+
+// Delete quiz
+app.delete('/quizzes', async (req, res) => {
+    console.log("Received request to delete quiz.")
+        const result = await deleteQuiz(req.body);
+        res.status(result.status).send(result.data || result.message);
 });
 
 // Listen for requests on port 3001

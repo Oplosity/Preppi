@@ -36,7 +36,8 @@
 
 - **Create Quiz**: `http://localhost:3001/quizzes`
     - This is for creating a new quiz
-    - **Required data in body**: quiz_name (string), quiz_desc (string), questions (JSONB) (example in example/example.json), subject (string)
+    - **Required data in body**: quiz_name (string), quiz_desc (string), questions (JSONB) (example in example/example.json), subject (string), username (string)
+    - `'username'` is for ensuring that only authorized users can create quizzes
 
 ### Get requests | Get Quizzes, Get Questions, Authenticate user
 
@@ -56,6 +57,18 @@
     - `'username'` is the user to be checked
     - Returns either true or false depending on if the user is an admin or not
 
-### Put requests | Edit Quizzes
+### Put requests | Edit Quiz
 
-### Delete requests | Delete Quizzes
+- **Edit Quiz**: `http://localhost:3001/quizzes`
+    - This is for editing quizzes
+    - **Required data in body**: quiz_id (int), quiz_name (string), quiz_desc (string), questions (JSONB), subject (string), username (string)
+    - If `'questions'` is left empty, it will keep the old questions. This is only the case for questions, so don't leave other things empty
+    - Note that declaring questions is still required. If the body doesn't contain "questions", it will return an error
+    - `'username'` is for ensuring that only authorized users can edit quizzes
+
+### Delete requests | Delete Quiz
+
+- **Delete Quiz**: `http://localhost:3001/quizzes`
+    - This is for deleting quizzes
+    - **Required data in body**: quiz_id (int), username (string)
+    - `'username'` is for ensuring that only authorized users can delete quizzes

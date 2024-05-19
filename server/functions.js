@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const db = require('./dbconnection.js');
 
+// Register
 async function userRegister(body) {
     try {
         // Initialize data
@@ -51,6 +52,7 @@ async function userRegister(body) {
     }
 }
 
+// Login
 async function userLogin(body) {
     try {
         // Initialize data
@@ -94,10 +96,11 @@ async function userLogin(body) {
     }
 }
 
+// Check if user is admin
 async function checkUser(query) {
     try {
         const username = query.username;
-
+        
         const user = await db.query(`
         SELECT admin 
         FROM preppi_schema.users 
@@ -119,12 +122,32 @@ async function checkUser(query) {
     }
 }
 
+// Create quiz
 async function createQuiz(body) {
     quiz_name = body.quiz_name;
     quiz_desc = body.quiz_desc;
     questions = body.questions;
     subject = body.subject;
+    username = body.username;
 
+    // Check if user is authorized to create quiz
+    if (username !== "") {
+
+        user = await db.query(`
+        SELECT admin 
+        FROM preppi_schema.users 
+        WHERE (username = $1)`, [username]);
+
+        if (user.rows.length === 0 || user.rows[0].admin !== true) {
+            console.log("Error: Unauthorized");
+            return { status: 401, message: "Unauthorized" };    
+        }
+
+    } else {
+        console.log("Error: Unauthorized");
+        return { status: 401, message: "Unauthorized" };
+    }
+    
     // Ensure that all required data is received
     if (quiz_name !== undefined && quiz_desc !== undefined && questions !== undefined && subject !== undefined) {
         
@@ -149,6 +172,123 @@ async function createQuiz(body) {
     }
 }
 
+// Edit quiz
+async function editQuiz(body) {
+    try {
+        username = body.username;
+        let user;
+
+        // Check if user is authorized to edit quiz
+        if (username !== "") {
+
+            user = await db.query(`
+            SELECT admin 
+            FROM preppi_schema.users 
+            WHERE (username = $1)`, [username]);
+    
+            if (user.rows.length === 0 || user.rows[0].admin !== true) {
+                console.log("Error: Unauthorized");
+                return { status: 401, message: "Unauthorized" };    
+            }
+    
+        } else {
+            console.log("Error: Unauthorized");
+            return { status: 401, message: "Unauthorized" };
+        }
+
+        // Edit quiz
+        if (body.quiz_id !== "" && body.quiz_name !== "" && body.quiz_desc !== "" && body.subject) {
+            // Try putting new data into quiz
+            try {
+                if (body.questions === "") {
+                    quizzes = await db.query(`
+                    UPDATE preppi_schema.quizzes 
+                    SET quiz_name = $2,
+                        quiz_desc = $3,
+                        subject = $4
+                    WHERE quiz_id = $1`, [body.quiz_id, body.quiz_name, body.quiz_desc, body.subject]);
+
+                } else {
+                    quizzes = await db.query(`
+                    UPDATE preppi_schema.quizzes 
+                    SET quiz_name = $2,
+                        quiz_desc = $3,
+                        questions = $4,
+                        subject = $5
+                    WHERE quiz_id = $1`, [body.quiz_id, body.quiz_name, body.quiz_desc, body.questions, body.subject]);
+                }
+            } catch (error) {
+                console.log("Error editing quiz:", error);
+                return { status: 500, message: "Internal Server Error" };
+            }
+
+            console.log("Successfully edited quiz!");
+                return { status: 201, message: "Successfully edited quiz!" };
+
+        } else {
+            console.log("Request missing information.");
+            return { status: 401, message: "Please ensure that quiz_id, quiz_name, quiz_desc, questions and subject contain data!" };
+        }
+
+    } catch (error) {
+        console.error("Error during editing quiz");
+        return { status: 500, message: "Internal Server Error" };
+    }
+}
+
+// Delete quiz
+async function deleteQuiz(body) {
+    try {
+        username = body.username;
+        quiz_id = body.quiz_id;
+        let user;
+
+        // Check if user is authorized to edit quiz
+        if (username !== "") {
+
+            user = await db.query(`
+            SELECT admin 
+            FROM preppi_schema.users 
+            WHERE (username = $1)`, [username]);
+    
+            if (user.rows.length === 0 || user.rows[0].admin !== true) {
+                console.log("Error: Unauthorized");
+                return { status: 401, message: "Unauthorized" };    
+            }
+    
+        } else {
+            console.log("Error: Unauthorized");
+            return { status: 401, message: "Unauthorized" };
+        }
+
+        // Delete quiz
+        if (quiz_id !== "") {
+            // Try deleting quiz
+            try {
+                await db.query(`
+                DELETE FROM preppi_schema.quizzes
+                WHERE quiz_id = $1`, [quiz_id]);
+
+            } catch (error) {
+                console.log("Error deleting quiz:", error);
+                return { status: 500, message: "Internal Server Error" };
+            }
+
+            console.log("Successfully deleted quiz!");
+                return { status: 200, message: "Successfully deleted quiz!" };
+
+        } else {
+            console.log("Request missing information.");
+            return { status: 401, message: "Please ensure that quiz_id, quiz_name, quiz_desc, questions and subject contain data!" };
+        }
+
+    } catch (error) {
+        console.error("Error during editing quiz");
+        return { status: 500, message: "Internal Server Error" };
+    }
+}
+
+// Get quizzes (either all or only from specific subject)
 async function getQuizzes(subject, empty) {
     let quizzes;
     try {
@@ -174,7 +314,7 @@ async function getQuizzes(subject, empty) {
                 try {
                     // Return the quizzes with their id
                     return {
-                        quiz_id: row.id,
+                        quiz_id: row.quiz_id,
                         quiz_name: row.quiz_name,
                         quiz_desc: row.quiz_desc,
                         subject: row.subject
@@ -231,4 +371,4 @@ async function getQuestions(id) {
     }
 }
 
-module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser };
+module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz };
