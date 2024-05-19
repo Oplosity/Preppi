@@ -1,4 +1,4 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -34,6 +34,18 @@ app.post('/quizzes', async (req, res) => {
 });
 
     // GET REQUESTS //
+
+// Authenticate user (admin or not)
+app.get('/auth', async (req, res) => {
+    console.log("Received request to check whether " + req.query.username + " is an admin or not");
+
+    if (req.body.username !== "") {
+        const result = await checkUser(req.query);
+        res.status(result.status).send(result.data || result.message);
+    } else {
+        res.status(401).send("Please enter username!");
+    }
+});
 
 // Get all quizzes for either a specific subject, or in general
 app.get('/quizzes', async (req, res) => {

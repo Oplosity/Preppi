@@ -94,6 +94,31 @@ async function userLogin(body) {
     }
 }
 
+async function checkUser(query) {
+    try {
+        const username = query.username;
+
+        const user = await db.query(`
+        SELECT admin 
+        FROM preppi_schema.users 
+        WHERE (username = $1)`, [username]);
+
+
+        if (user.rows.length === 0) {
+            console.log("Authentication failed, user not found.");
+            return { status: 401, data: "Incorrect username!" };
+        } 
+
+        console.log("Successfully checked whether user is admin or not.");
+        const isAdmin = user.rows[0].admin;
+        return { status: 200, data: isAdmin };
+
+    } catch (error) {
+        console.error("Error during user auth:", error);
+        return { status: 500, message: "Internal Server Error" };
+    }
+}
+
 async function createQuiz(body) {
     quiz_name = body.quiz_name;
     quiz_desc = body.quiz_desc;
@@ -206,4 +231,4 @@ async function getQuestions(id) {
     }
 }
 
-module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions };
+module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser };

@@ -38,7 +38,7 @@
     - This is for creating a new quiz
     - **Required data in body**: quiz_name (string), quiz_desc (string), questions (JSONB) (example in example/example.json), subject (string)
 
-### Get requests | Get Quizzes, Get Questions
+### Get requests | Get Quizzes, Get Questions, Authenticate user
 
 - **Get Quizzes**: `http://localhost:3001/quizzes?subject=searchedsubject`
     - This is for getting the quizzes within a specific subject (e.g., math, biology, etc...)
@@ -50,3 +50,12 @@
     - This is for getting the questions in a specific quiz
     - `'quizid'` is the id of the quiz you want to get the questions to
     - Returns questions (JSONB)
+
+- **Authenticate User**: `http://localhost:3001/auth?username=username`
+    - This is for checking whether the user is an admin or not
+    - `'username'` is the user to be checked
+    - Returns either true or false depending on if the user is an admin or not
+
+### Put requests | Edit Quizzes
+
+### Delete requests | Delete Quizzes
