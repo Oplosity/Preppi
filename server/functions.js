@@ -40,7 +40,7 @@ async function userRegister(body) {
 
         } catch (e) {
             console.error("Error inserting data into database:", error);
-            return { status: 500, data: "Server failed to connect to database" };
+            return { status: 500, data: "Internal Server Error " + error };
         }
 
         console.log("Registering successful.");
@@ -48,7 +48,7 @@ async function userRegister(body) {
 
     } catch (error) {
         console.error("Error during registering:", error);
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 }
 
@@ -92,7 +92,7 @@ async function userLogin(body) {
 
     } catch (error) {
         console.error("Error during login:", error);
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 }
 
@@ -114,20 +114,29 @@ async function checkUser(query) {
 
         console.log("Successfully checked whether user is admin or not.");
         const isAdmin = user.rows[0].admin;
-        return { status: 200, data: isAdmin };
+        return { status: 200, data: ''+isAdmin+'' };
 
     } catch (error) {
         console.error("Error during user auth:", error);
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error};
     }
 }
 
-// Add score from quiz to user
+// Add score
 async function addScore(body) {
     username = body.username;
     quiz_id = body.quiz_id;
     score = body.score;
     let user_id;
+
+    // Ensure that all values contain data
+    if (username === "" || quiz_id === "" || score === "") {
+        console.log("Request missing data.");
+        return { status: 400, message: "Please ensure that username, quiz_id and score contain data!" };
+    } else if (username === undefined || quiz_id === undefined || score === undefined) {
+        console.log("Request missing data.");
+        return { status: 400, message: "Please ensure that username, quiz_id and score are defined!" };
+    }
 
     try {
         if (username !== "" && quiz_id !== "") {
@@ -140,13 +149,13 @@ async function addScore(body) {
 
             } catch (error) {
                 console.error("Error getting user_id:", error);
-                return { status: 500, message: "Internal Server Error" };
+                return { status: 500, message: "Internal Server Error " + error};
             }
 
             // Check if any username matched
             if (user_id.rows.length === 0) {
                 console.error("Invalid username");
-                return { status: 400, message: "Invalid username!" };
+                return { status: 400, message: "Please give an existing username!" };
             } else {
                 user_id = user_id.rows[0].user_id;
                 console.log("Got user id")
@@ -164,11 +173,11 @@ async function addScore(body) {
                 console.log("Inserted score successfully")
 
                 console.log("Successfully added score.");
-                return { status: 400, message: "Successfully updated score!" };
+                return { status: 201, message: "Successfully updated score!" };
 
             } catch (error) {
                 console.error("Error adding score:", error);
-                return { status: 500, message: "Internal Server Error " };
+                return { status: 500, message: "Internal Server Error " + error };
             }
 
         } else {
@@ -177,14 +186,24 @@ async function addScore(body) {
         }
     } catch (error) {
         console.error("Error adding scores:", error);
-            return { status: 500, message: "Internal Server Error" };
+            return { status: 500, message: "Internal Server Error " + error };
     }
 }
 
 // Get quiz scores
 async function getQuizScores(quiz_id, empty) {
+
     if (!empty) { // If quiz_id was given
+
+        // Ensure given id is integer
+        const parsedId = parseInt(quiz_id);
+        if (isNaN(parsedId)) {
+            console.log("Incorrect id.");
+            return { status: 400, message: "Invalid id! Please ensure that the id is an integer." };
+        }
+
         try {
+
             scores = await db.query(`
                 SELECT u.username, q.quiz_name, s.score
                 FROM preppi_schema.scores s
@@ -194,15 +213,14 @@ async function getQuizScores(quiz_id, empty) {
             `, [quiz_id]);
 
         } catch (error) {
-            console.error("Error getting scores:", error);
-            return { status: 500, message: "Internal Server Error" };
-        }
 
-        console.log("Successfully got scores!");
-        return { status: 200, message: scores.rows };
+            console.error("Error getting scores:", error);
+            return { status: 500, message: "Internal Server Error " + error };
+        }
 
     } else { // If no quiz_id was given
         try {
+            
             scores = await db.query(`
                 SELECT u.username, q.quiz_name, s.score
                 FROM preppi_schema.scores s
@@ -211,18 +229,28 @@ async function getQuizScores(quiz_id, empty) {
             `);
 
         } catch (error) {
+
             console.error("Error getting scores:", error);
-            return { status: 500, message: "Internal Server Error" };
+            return { status: 500, message: "Internal Server Error " + error };
         }
-
-        console.log("Successfully got scores!");
-        return { status: 200, message: scores.rows };
-
     }
+
+    if (scores.rows.length === 0) {
+        console.log("No scores exist");
+        return { status: 500, message: "No scores associated with given quiz" };
+    }
+
+    console.log("Successfully got scores!");
+    return { status: 200, message: scores.rows };
 }
 
 // Get user scores
 async function getUserScores(username) {
+    if (username === "") {
+        console.error("Username not given");
+        return { status: 400, message: "No username specified" };
+    }
+
     try {
         scores = await db.query(`
             SELECT q.quiz_name, s.score
@@ -234,7 +262,7 @@ async function getUserScores(username) {
 
     } catch (error) {
         console.error("Error getting scores:", error);
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 
     if (scores.rows.length === 0) {
@@ -254,46 +282,40 @@ async function createQuiz(body) {
     subject = body.subject;
     username = body.username;
 
+    // Ensure all values contain data
+    if (quiz_name === "" || quiz_desc === "" || questions === "" || subject === "" || username === "") {
+        console.log("Request missing data.");
+        return { status: 400, message: "Please ensure that quiz_name, quiz_desc, questions, subject and username contain data!" };
+    } else if (quiz_name === undefined || quiz_desc === undefined || questions === undefined || subject === undefined || username === undefined) {
+        console.log("Request missing data.");
+        return { status: 400, message: "Please ensure that quiz_name, quiz_desc, questions, subject and username are defined!" };
+    }
+
     // Check if user is authorized to create quiz
-    if (username !== "") {
+    user = await db.query(`
+    SELECT admin 
+    FROM preppi_schema.users 
+    WHERE (username = $1)`, [username]);
 
-        user = await db.query(`
-        SELECT admin 
-        FROM preppi_schema.users 
-        WHERE (username = $1)`, [username]);
-
-        if (user.rows.length === 0 || user.rows[0].admin !== true) {
-            console.log("Error: Unauthorized");
-            return { status: 401, message: "Unauthorized" };    
-        }
-
-    } else {
+    if (user.rows.length === 0 || user.rows[0].admin !== true) {
         console.log("Error: Unauthorized");
-        return { status: 401, message: "Unauthorized" };
+        return { status: 401, message: "Unauthorized" };    
     }
-    
-    // Ensure that all required data is received
-    if (quiz_name !== undefined && quiz_desc !== undefined && questions !== undefined && subject !== undefined) {
         
-        // Try putting data into database
-        try {
-            await db.query(`
-            INSERT INTO preppi_schema.quizzes (quiz_name, quiz_desc, questions, subject)
-            VALUES ($1, $2, $3, $4)
-        `, [quiz_name, quiz_desc, questions, subject]);
+    // Try putting data into database
+    try {
+        await db.query(`
+        INSERT INTO preppi_schema.quizzes (quiz_name, quiz_desc, questions, subject)
+        VALUES ($1, $2, $3, $4)
+    `, [quiz_name, quiz_desc, questions, subject]);
 
-        } catch (error) {
-            console.log("Error inserting data to database:", error);
-            return { status: 500, message: "Server failed to connect to database" };
-        }
-
-        console.log("Successfully created quiz.");
-        return { status: 200, message: "Successfully created quiz!" };
-
-    } else {
-        console.log("Request to create quiz was missing info.");
-        return { status: 400, message: "Please ensure that quiz_name, quiz_desc, questions and subject contain data!" };
+    } catch (error) {
+        console.log("Error inserting data to database:", error);
+        return { status: 500, message: "Internal Server Error " + error };
     }
+
+    console.log("Successfully created quiz.");
+    return { status: 200, message: "Successfully created quiz!" };
 }
 
 // Edit quiz
@@ -343,7 +365,7 @@ async function editQuiz(body) {
                 }
             } catch (error) {
                 console.log("Error editing quiz:", error);
-                return { status: 500, message: "Internal Server Error" };
+                return { status: 500, message: "Internal Server Error " + error };
             }
 
             console.log("Successfully edited quiz!");
@@ -356,7 +378,7 @@ async function editQuiz(body) {
 
     } catch (error) {
         console.error("Error during editing quiz");
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 }
 
@@ -395,7 +417,7 @@ async function deleteQuiz(body) {
 
             } catch (error) {
                 console.log("Error deleting quiz:", error);
-                return { status: 500, message: "Internal Server Error" };
+                return { status: 500, message: "Internal Server Error " + error };
             }
 
             console.log("Successfully deleted quiz!");
@@ -408,7 +430,7 @@ async function deleteQuiz(body) {
 
     } catch (error) {
         console.error("Error during editing quiz");
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 }
 
@@ -467,13 +489,21 @@ async function getQuizzes(subject, empty) {
         } else {
             console.error("Error during getting all quizzes:", error)
         }
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 }
 
 // Get questions
 async function getQuestions(id) {
     try {
+        // Ensure given id is integer
+        const parsedId = parseInt(id);
+        if (isNaN(parsedId)) {
+            console.log("Incorrect id.");
+            return { status: 400, message: "id can't contain characters!" };
+        }
+
+
         // Look for questions in a specific quiz
         const questions = await db.query(`
         SELECT questions
@@ -492,7 +522,7 @@ async function getQuestions(id) {
 
     } catch (error) {
         console.error("Error during getting questions for quiz:", error);
-        return { status: 500, message: "Internal Server Error" };
+        return { status: 500, message: "Internal Server Error " + error };
     }
 }
 

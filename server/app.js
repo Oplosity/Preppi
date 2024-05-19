@@ -80,14 +80,14 @@ app.get('/quizzes', async (req, res) => {
     ];
 
     if (subject === undefined) {
-        // Get all questions
-        console.log("Received request to get quizzes.")
+        // Get all quizzes
+        console.log("Received request to get all quizzes.")
         const result = await getQuizzes(subject, true);
         res.status(result.status).send(result.data || result.message);
 
     } else if (subjects.includes(subject)) {
-        // Get questions from a specific subject
-        console.log("Received request to get quizzes.")
+        // Get quizzes from a specific subject
+        console.log("Received request to get a specific subjects quizzes.")
         const result = await getQuizzes(subject, false);
         res.status(result.status).send(result.data || result.message);
 
