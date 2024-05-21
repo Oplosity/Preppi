@@ -22,6 +22,14 @@ app.post('/users', async (req, res) => {
     if (type === "register") {
         console.log("Received register request.")
         const result = await userRegister(req.body);
+        if(result.token){
+          res.cookie('jwt', result.token, {
+            httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
+            // secure: process.env.NODE_ENV === 'production', // Send cookie only over HTTPS in production
+            maxAge: 20 * 60 * 60 * 1000, // Cookie expiration time in milliseconds (20 hours in this case)
+            sameSite: 'none', // 'string' will prevent the browser from sending this cookie along with cross-site requests
+          });
+        }
         res.status(result.status).send(result.data || result.message);
     } else if (type === "login") {
         console.log("Received login request.")
