@@ -7,6 +7,7 @@
 - **express**: Package for running the server
 - **pg**: Package for creating a connection between the server and PostgreSQL
 - **bcrypt**: Package for hashing and salting passwords, making them securely stored
+- **dotenv**: Package for locally storing DB connection information
 
 ### Tools
 - **PostgreSQL**: Required for running the database
