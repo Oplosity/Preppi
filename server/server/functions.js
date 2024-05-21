@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const db = require('./dbconnection.js');
+const jose = require('jose')
+require('dotenv').config();
 
     // POST REQUESTS //
 
@@ -78,13 +80,23 @@ async function userLogin(body) {
         const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
         // If passwords matched
-        if (passwordMatch) {
-            console.log("Login successful.");
-            return { status: 200, data: "Login successful!" };
-        } else {
+        if (!passwordMatch) {
             console.log("Login failed, incorrect password.");
             return { status: 401, data: "Incorrect username or password" };
         }
+
+        // Set cookie
+
+        if(!process.env.JWT_SECRET) throw "no jwt secret"
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const token = await new jose.SignJWT({ username: username })
+          .setProtectedHeader({ alg: 'HS256' })
+          .setExpirationTime('20h')
+          .sign(secret);
+        console.log(token)
+
+        console.log("Login successful.");
+        return { status: 200, data: "Login successful!", token: token };
 
     } catch (error) {
         console.error("Error during login:", error);
