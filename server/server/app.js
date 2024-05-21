@@ -3,6 +3,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 
+require('dotenv').config();
+
 // For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -162,5 +164,5 @@ app.delete('/quizzes', async (req, res) => {
 
 // Listen for requests on port 3001
 app.listen(3001, () => {
-    console.log(`App listening on port 3001`)
+    console.log(`App listening on port 300asdasd1`)
 })
