@@ -39,4 +39,4 @@ export default function Home() {
       </div>
     </div>
   );
-}//If you already have an account register
+}
