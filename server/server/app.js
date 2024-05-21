@@ -1,6 +1,7 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz, checkAuthentication } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
 const app = express()
 const cors = require('cors')
 
@@ -9,6 +10,7 @@ require('dotenv').config();
 // For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // cors thing
 app.use(cors())
@@ -52,6 +54,13 @@ app.post('/scores', async (req, res) => {
     console.log("Received request to add score")
     const result = await addScore(req.body);
     res.status(result.status).send(result.data || result.message);
+});
+
+// Check user authentication
+app.post('/checkAuthentication', async (req, res) => {
+  console.log("Received authentication check request");
+  const result = await checkAuthentication(req);
+  res.status(result.status).send(result.data || result.message);
 });
 
     // GET REQUESTS //

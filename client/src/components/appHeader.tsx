@@ -1,6 +1,7 @@
 "use client"
  
 import * as React from "react"
+import { useEffect } from "react"
 import Link from "next/link"
  
 import { cn } from "@/lib/utils"
@@ -17,6 +18,7 @@ import { Button } from "./ui/button"
 import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
+import axios from "axios"
 
 const components: { title: string; href: string; description: string }[] = [
     {
@@ -57,6 +59,12 @@ const components: { title: string; href: string; description: string }[] = [
   ]
 
 export default function AppHeader() {
+  useEffect(() => {
+    axios.post("http://localhost:3001/checkAuthentication", null, { withCredentials: true }).then((res) => {
+      console.log(res)
+    })
+  }, [])
+
     return(
         <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
             <header className="flex items-center standard-app-padding">
