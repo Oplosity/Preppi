@@ -2,12 +2,16 @@ const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
+const cors = require('cors')
 
 require('dotenv').config();
 
 // For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// cors thing
+app.use(cors())
 
     // POST REQUESTS //
 
