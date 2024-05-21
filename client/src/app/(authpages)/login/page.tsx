@@ -19,7 +19,9 @@ export default function Home() {
   return (
     <div className="flex overflow-hidden h-screen">
       <div className="flex flex-col flex-1 justify-center">
+        <Link href="/">
         <Image src="logo-black.svg" height={45} width={157.5} alt="Preppi logo" className="mb-20 ml-[10%]"/>
+        </Link>
         <div className="self-center">
           <h2 className={`${poppins.className} text-black text-4xl mb-3 text-pretty`}>Login</h2>
           <h1 className={`${poppins.className} text-black text-md mb-2 text-pretty`}>If you don`t have an account<br/>You can <Button variant="link" size={"links"} className="text-md">Sign up here!</Button></h1>
