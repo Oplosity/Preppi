@@ -1,0 +1,34 @@
+{
+    "question1": {
+      "question": "What is the capital of France?",
+      "type": "multiple choice",
+      "answer": "Paris",
+      "options": {
+        "option1": "Paris",
+        "option2": "Berlin",
+        "option3": "Rome"
+      }
+    },
+
+    "question2": {
+      "question": "Which planet is known as the Red Planet?",
+      "type": "multiple choice",
+      "answer": "Mars",
+      "options": {
+        "option1": "Mars",
+        "option2": "Jupiter",
+        "option3": "Venus"
+      }
+    },
+
+    "question3": {
+      "question": "Who wrote To Kill a Mockingbird?",
+      "type": "multiple choice",
+      "answer": "Harper Lee",
+      "options": {
+        "option1": "Harper Lee",
+        "option2": "J.K. Rowling",
+        "option3": "Charles Dickens"
+      }
+    }
+}
