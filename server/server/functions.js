@@ -277,6 +277,40 @@ async function getQuizzes(subject, empty) {
     }
 }
 
+// Get specific quiz
+async function getQuiz(query) {
+    try {
+        const quiz_id = query.quiz_id;
+
+        if (!quiz_id) {
+            console.log("Request missing quiz_id");
+            return { status: 400, message: "Please enter an quiz_id!"};
+        }
+
+        const quiz = await db.query(`
+            SELECT * 
+            FROM preppi_schema.quizzes 
+            WHERE (quiz_id = $1)
+        `, [quiz_id]);
+
+        formattedQuiz = quiz.rows.map(row => {
+            return {
+                quiz_id: row.quiz_id,
+                quiz_name: row.quiz_name,
+                quiz_desc: row.quiz_desc,
+                subject: row.subject
+            };
+        });
+        
+        console.log("Successfully got quiz.");
+        return { status: 200, message: formattedQuiz};
+
+    } catch (error) {
+        console.error("Error during getting quiz:", error);
+        return { status: 500, message: "Internal Server Error " + error};
+    }
+}
+
 // Get questions
 async function getQuestions(query) {
     try {
@@ -516,4 +550,4 @@ async function deleteQuiz(body) {
     }
 }
 
-module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores };
+module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz };

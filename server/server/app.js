@@ -1,4 +1,4 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -56,24 +56,24 @@ app.get('/quizzes', async (req, res) => {
     const subject = req.query.subject;
     const subjects = [
         "Mathematics",
-        "English",
-        "Science",
-        "History",
-        "Geography",
-        "French",
-        "Spanish",
-        "German",
-        "Italian",
-        "Computer Science",
-        "Art",
-        "Music",
-        "Physical Education",
-        "Business Studies",
-        "Economics",
         "Biology",
         "Chemistry",
+        "History",
         "Physics",
-        "Psychology"
+        "Geography",
+        "ComputerScience",
+        "Literature",
+        "Economics",
+        "Art",
+        "Music",
+        "Philosophy",
+        "Psychology",
+        "Sociology",
+        "PoliticalScience",
+        "BusinessStudies",
+        "EnvironmentalScience",
+        "HealthEducation",
+        "ForeignLanguages"
     ];
 
     if (!subject) {
@@ -91,6 +91,13 @@ app.get('/quizzes', async (req, res) => {
     } else {
         res.status(400).send(subject + " is not a recognized value for query 'subject'! List of accepted values: " + subjects);
     }
+});
+
+// Get a specific quiz
+app.get('/quiz', async (req, res) => {
+    console.log("Received request a specific quiz.")
+    const result = await getQuiz(req.query);
+    res.status(result.status).send(result.data || result.message);
 });
 
 // Get questions for a quiz

@@ -63,8 +63,10 @@ export default async function Page ({ params }: { params: { subject: string } })
             <QuizOption name={quiz.quiz_name} description={quiz.quiz_desc} completed={56} id={quiz.quiz_id}  />
           </div>
         );
+
       } catch {
         console.log(response.data)
+        retrievedQuizzes = "No quizzes for that subject exist!"
       }
 
     } else {
