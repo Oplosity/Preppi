@@ -327,9 +327,10 @@ async function getQuiz(query) {
 async function getQuestions(query) {
     try {
         // Initialize data
-        let id = query.id;
+        let id = query.quiz_id;
 
         if (!id) {
+            console.log("Id not given.")
             return { status: 401, data: "Please enter an id!" };
         }
 
