@@ -143,5 +143,5 @@ app.delete('/quizzes', async (req, res) => {
 
 // Listen for requests on port 3001
 app.listen(3001, () => {
-    console.log(`App listening on port `+ process.env.DB_PORT)
+    console.log(`App listening on port `+ 3001)
 })

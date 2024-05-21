@@ -188,7 +188,6 @@ async function addScore(body) {
     }
 }
 
-
     // GET REQUESTS //
 
 // Check if user is admin
@@ -516,7 +515,5 @@ async function deleteQuiz(body) {
         return { status: 500, message: "Internal Server Error " + error };
     }
 }
-
-
 
 module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores };
