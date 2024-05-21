@@ -1,38 +1,97 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
-import { Poppins } from "next/font/google";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { faApple, faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-const poppins = Poppins({ subsets: ["latin"], weight: "400" });
+import { useRouter } from 'next/navigation'
 
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Login - Preppi',
-  description: 'Login into your account to personalize your experience on Preppi.',
-}
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import axios from 'axios'
+ 
+const formSchema = z.object({
+  username: z.string().min(2, { message: "Required" }).max(50),
+  password: z.string().min(4, { message: "Required" }).max(200),
+})
 
 export default function Home() {
+
+  const router = useRouter()
+
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  })
+  
+  // 2. Define a submit handler.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+    try{
+      await axios.post("http://localhost:3001/users?type=login", values)
+      router.push("/app")
+    }catch(error: any){
+      alert("Form submit error: "+(error.response?.data ? error.response.data : error))
+    }
+  }
+
   return (
     <div className="flex overflow-hidden h-screen">
       <div className="flex flex-col flex-1 justify-center">
         <Image src="logo-black.svg" height={45} width={157.5} alt="Preppi logo" className="mb-20 ml-[10%]"/>
         <div className="self-center">
-          <h2 className={`${poppins.className} text-black text-4xl mb-3 text-pretty`}>Login</h2>
-          <h1 className={`${poppins.className} text-black text-md mb-2 text-pretty`}>If you don`t have an account<br/>You can <Button variant="link" size={"links"} className="text-md">Sign up here!</Button></h1>
-          <p className={`${poppins.className} text-gray-500 mb-1 text-pretty`}>Email</p>
-          <Input></Input>
-          <p className={`${poppins.className} text-gray-500 mb-1 text-pretty`}>Password</p>
-          <Input className="mb-2"></Input>
-          <div className="flex pb-3">
-            <Checkbox/>
-            <p className={`${poppins.className} text-black text-xs mb-1 text-pretty pl-2`}>Remember me</p>
-            <Button variant="link2" size={"links"} className={`${poppins.className} text-gray-500 mb-1 text-pretty ml-24 text-xs`}>Forgot password?</Button>
-          </div>
-          <Button size={"wide"}>Login</Button>
+          <h2 className={`text-black text-4xl mb-3 text-pretty`}>Login</h2>
+          <h1 className={`text-black text-md mb-2 text-pretty`}>If you don`t have an account<br/>You can <Button variant="link" size={"links"} className="text-md">Sign up here!</Button></h1>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="preppi" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Submit</Button>
+            </form>
+          </Form>
           
           <div className="w-full px-24">
             <p className="py-3 text-md text-gray-500 px-1">Or continue with</p>
@@ -54,12 +113,10 @@ export default function Home() {
       
       <div className="flex-1 p-10">
         <div className="flex flex-col h-full w-full bg-[url('/landing/landing-bg.svg')] bg-cover rounded-xl p-10">
-          <div className="grow relative self-center h-full w-full">
-            <Image alt="f" src={'/sign-in-pana.png'} fill/>
-          </div>
+          <div className="grow relative self-center h-full w-full bg-[url('/sign-up-pana.png')] bg-contain bg-no-repeat bg-center"></div>
           <div className="">
-            <h1 className={`${poppins.className} text-white text-3xl mb-0 text-pretty pl-10`}>Log in to Preppi</h1>
-            <p className={`${poppins.className} text-white text-2xl mb-3 text-pretty pl-10`}>Your personalized quizzes are waiting for you!</p>
+            <h1 className={`text-white text-3xl mb-0 text-pretty pl-10`}>Log in to Preppi</h1>
+            <p className={`text-white text-2xl mb-3 text-pretty pl-10`}>Your personalized quizzes are waiting for you!</p>
           </div>
         </div>
       </div>

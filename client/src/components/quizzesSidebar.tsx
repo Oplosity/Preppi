@@ -19,7 +19,7 @@ export default function QuizzesSidebar () {
                 <Link href="/app/quizzes/Chemistry">Chemistry</Link>
             </Button>
             <Button asChild variant="sidebarButton">
-                <Link href="/app/quizzes/link5">History</Link>
+                <Link href="/app/quizzes/History">History</Link>
             </Button>
             <Button asChild variant="sidebarButton">
                 <Link href="/app/quizzes/Physics">Physics</Link>

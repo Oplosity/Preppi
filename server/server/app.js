@@ -1,13 +1,17 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
+const cors = require('cors')
 
 require('dotenv').config();
 
 // For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// cors thing
+app.use(cors())
 
     // POST REQUESTS //
 
@@ -18,6 +22,14 @@ app.post('/users', async (req, res) => {
     if (type === "register") {
         console.log("Received register request.")
         const result = await userRegister(req.body);
+        if(result.token){
+          res.cookie('jwt', result.token, {
+            httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
+            // secure: process.env.NODE_ENV === 'production', // Send cookie only over HTTPS in production
+            maxAge: 20 * 60 * 60 * 1000, // Cookie expiration time in milliseconds (20 hours in this case)
+            sameSite: 'none', // 'string' will prevent the browser from sending this cookie along with cross-site requests
+          });
+        }
         res.status(result.status).send(result.data || result.message);
     } else if (type === "login") {
         console.log("Received login request.")
@@ -56,24 +68,24 @@ app.get('/quizzes', async (req, res) => {
     const subject = req.query.subject;
     const subjects = [
         "Mathematics",
-        "English",
-        "Science",
-        "History",
-        "Geography",
-        "French",
-        "Spanish",
-        "German",
-        "Italian",
-        "Computer Science",
-        "Art",
-        "Music",
-        "Physical Education",
-        "Business Studies",
-        "Economics",
         "Biology",
         "Chemistry",
+        "History",
         "Physics",
-        "Psychology"
+        "Geography",
+        "ComputerScience",
+        "Literature",
+        "Economics",
+        "Art",
+        "Music",
+        "Philosophy",
+        "Psychology",
+        "Sociology",
+        "PoliticalScience",
+        "BusinessStudies",
+        "EnvironmentalScience",
+        "HealthEducation",
+        "ForeignLanguages"
     ];
 
     if (!subject) {
@@ -91,6 +103,13 @@ app.get('/quizzes', async (req, res) => {
     } else {
         res.status(400).send(subject + " is not a recognized value for query 'subject'! List of accepted values: " + subjects);
     }
+});
+
+// Get a specific quiz
+app.get('/quiz', async (req, res) => {
+    console.log("Received request a specific quiz.")
+    const result = await getQuiz(req.query);
+    res.status(result.status).send(result.data || result.message);
 });
 
 // Get questions for a quiz
