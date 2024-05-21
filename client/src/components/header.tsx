@@ -75,7 +75,7 @@ export default function Header() {
                 </NavigationMenu>
                 <div className="grow text-right">
                     <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">
-                    <Link href="/login">Log in</Link>
+                      <Link href="/login">Log in</Link>
                     </Button>
                     <Button asChild className="mr-3"><Link href="/signup">Sign up</Link></Button>
                     {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}

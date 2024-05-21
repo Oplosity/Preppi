@@ -50,7 +50,7 @@ export default function Home() {
             <div className="standard-page flex-col-reverse md:flex-row flex h-full space-y-8 space-y-reverse md:space-x-16 items-center">
                 <div className="md:flex-1">
                     <h1 className={`${bungee.className} text-white text-2xl xl:text-3xl mb-3 text-pretty`}>BOOST YOUR EXAM PREP WITH TAILORED QUIZZES AND PERSONALIZED STUDY PLANS FROM PREPPI!</h1>
-                    <Button>Join</Button>
+                    <Button><Link href="/signup">Join</Link></Button>
                 </div>
                 <div className="md:flex-1">
                     <Image src="/landing/online-learning.svg" alt="" width={1620} height={960} quality={100} /> 
