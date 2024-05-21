@@ -48,7 +48,7 @@ app.post('/scores', async (req, res) => {
 app.get('/auth', async (req, res) => {
     console.log("Received request to check whether " + req.query.username + " is an admin or not");
 
-    if (req.body.username !== "") {
+    if (req.query.username !== "") {
         const result = await checkUser(req.query);
         res.status(result.status).send(result.data || result.message);
     } else {
@@ -164,5 +164,5 @@ app.delete('/quizzes', async (req, res) => {
 
 // Listen for requests on port 3001
 app.listen(3001, () => {
-    console.log(`App listening on port 300asdasd1`)
+    console.log(`App listening on port 5432`)
 })
