@@ -51,7 +51,7 @@ export default function Header() {
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger><Link href="#quizzes">Quizzes</Link></NavigationMenuTrigger>
+                            <NavigationMenuTrigger><Link href="http://localhost:3000#quizzes">Quizzes</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
