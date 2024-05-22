@@ -65,7 +65,6 @@ export default async function Page ({ params }: { params: { subject: string } })
         );
 
       } catch {
-        console.log(response.data)
         retrievedQuizzes = "No quizzes for that subject exist!"
       }
 

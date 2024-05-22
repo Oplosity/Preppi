@@ -20,6 +20,11 @@ app.use(cors({
 
     // POST REQUESTS //
 
+app.get('/test', async (req, res) => {
+    const result = await test();
+    res.status(result.status).send(result.data || result.message);
+});
+
 // User login/register
 app.post('/users', async (req, res) => {
     const type = req.query.type;
