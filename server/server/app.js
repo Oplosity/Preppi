@@ -20,11 +20,6 @@ app.use(cors({
 
     // POST REQUESTS //
 
-app.get('/test', async (req, res) => {
-    const result = await test();
-    res.status(result.status).send(result.data || result.message);
-});
-
 // User login/register
 app.post('/users', async (req, res) => {
     const type = req.query.type;
@@ -33,13 +28,12 @@ app.post('/users', async (req, res) => {
         console.log("Received register request.")
         const result = await userRegister(req.body);
         res.status(result.status).send(result.data || result.message);
+
     } else if (type === "login") {
         console.log("Received login request.")
         const result = await userLogin(req.body);
-        console.log("asdasd1")
+        
         if(result.token){
-          console.log("asdasd")
-          console.log(result.token)
           res.cookie('jwt', result.token, {
             httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
             secure: false, // process.env.NODE_ENV === 'production'
@@ -47,9 +41,22 @@ app.post('/users', async (req, res) => {
             sameSite: 'lax', // 'string' will prevent the browser from sending this cookie along with cross-site requests
           });
         }
+
         res.status(result.status).send(result.data || result.message);
+
     } else {
         res.status(400).send(type + " is not a recognized value for query 'users'! Did you mean register/login?");
+    }
+});
+
+// Logout
+app.post('/logout', async (req, res) => {
+    try {
+        res.status(200).clearCookie("jwt");
+    } catch (error) {
+        console.error('Error deleting cookie:', error);
+        res.status(500).send('Internal Server Error');
+
     }
 });
 
@@ -73,6 +80,7 @@ app.post('/checkAuthentication', async (req, res) => {
   const result = await checkAuthentication(req);
   res.status(result.status).send(result.data || result.message);
 });
+
 
     // GET REQUESTS //
 
