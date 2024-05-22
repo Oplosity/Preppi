@@ -60,8 +60,8 @@ export default function Home() {
     // ✅ This will be type-safe and validated.
     console.log(values)
     try{
-      await axios.post("http://localhost:3001/users?type=register", values)
-      await axios.post("http://localhost:3001/users?type=login", values)
+      await axios.post("http://localhost:3001/users?type=register", values, {withCredentials: true})
+      await axios.post("http://localhost:3001/users?type=login", values, {withCredentials: true})
       router.push("/app")
     }catch(error: any){
       alert("Form submit error: "+error.response.data)

@@ -1,6 +1,7 @@
-const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz } = require('./functions.js');
+const { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz, checkAuthentication } = require('./functions.js');
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
 const app = express()
 const cors = require('cors')
 
@@ -9,9 +10,13 @@ require('dotenv').config();
 // For parsing request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // cors thing
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}))
 
     // POST REQUESTS //
 
@@ -31,6 +36,17 @@ app.post('/users', async (req, res) => {
     } else if (type === "login") {
         console.log("Received login request.")
         const result = await userLogin(req.body);
+        console.log("asdasd1")
+        if(result.token){
+          console.log("asdasd")
+          console.log(result.token)
+          res.cookie('jwt', result.token, {
+            httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
+            secure: false, // process.env.NODE_ENV === 'production'
+            maxAge: 20 * 60 * 60 * 1000, // Cookie expiration time in milliseconds (20 hours in this case)
+            sameSite: 'lax', // 'string' will prevent the browser from sending this cookie along with cross-site requests
+          });
+        }
         res.status(result.status).send(result.data || result.message);
     } else {
         res.status(400).send(type + " is not a recognized value for query 'users'! Did you mean register/login?");
@@ -49,6 +65,13 @@ app.post('/scores', async (req, res) => {
     console.log("Received request to add score")
     const result = await addScore(req.body);
     res.status(result.status).send(result.data || result.message);
+});
+
+// Check user authentication
+app.post('/checkAuthentication', async (req, res) => {
+  console.log("Received authentication check request");
+  const result = await checkAuthentication(req);
+  res.status(result.status).send(result.data || result.message);
 });
 
     // GET REQUESTS //

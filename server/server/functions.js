@@ -85,6 +85,15 @@ async function userLogin(body) {
             return { status: 401, data: "Incorrect username or password" };
         }
 
+        // Set cookie
+
+        if(!process.env.JWT_SECRET) throw "no jwt secret"
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const token = await new jose.SignJWT({ username: username })
+          .setProtectedHeader({ alg: 'HS256' })
+          .setExpirationTime('20h')
+          .sign(secret);
+
         console.log("Login successful.");
         return { status: 200, data: "Login successful!" };
 
@@ -221,6 +230,38 @@ async function checkUser(query) {
         console.error("Error during user auth:", error);
         return { status: 500, message: "Internal Server Error " + error};
     }
+}
+
+// Check if user is admin
+async function checkAuthentication(req) {
+  try {
+    
+      // Check the token from cookie
+      const token = req.cookies.jwt;
+
+      if (!req.cookies.jwt) return { status: 200, data: "" };
+
+      if(!process.env.JWT_SECRET) throw "no jwt secret"
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      const { payload } = await jose.jwtVerify(token, secret);
+      
+      const user = await db.query(`
+      SELECT 1 
+      FROM preppi_schema.users 
+      WHERE (username = $1)`, [payload.username]);
+
+
+      if (user.rows.length === 0) {
+          console.log("Authentication failed, user not found.");
+          return { status: 200, data: "" };
+      } 
+      
+      return { status: 200, data: payload.username };
+
+  } catch (error) {
+      console.error("Error during authentication check:", error);
+      return { status: 500, message: "Internal Server Error " + error};
+  }
 }
 
 // Get quizzes
@@ -553,4 +594,4 @@ async function deleteQuiz(body) {
     }
 }
 
-module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz };
+module.exports = { userLogin, userRegister, createQuiz, getQuizzes, getQuestions, checkAuthentication, checkUser, editQuiz, deleteQuiz, addScore, getQuizScores, getUserScores, getQuiz };

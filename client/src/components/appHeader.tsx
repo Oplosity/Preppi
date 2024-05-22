@@ -1,6 +1,7 @@
 "use client"
  
 import * as React from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
  
 import { cn } from "@/lib/utils"
@@ -17,6 +18,7 @@ import { Button } from "./ui/button"
 import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
+import axios from "axios"
 
 const components: { title: string; href: string; description: string }[] = [
     {
@@ -57,6 +59,13 @@ const components: { title: string; href: string; description: string }[] = [
   ]
 
 export default function AppHeader() {
+  const [username, setUsernanme] = useState<string>("")
+  useEffect(() => {
+    axios.post("http://localhost:3001/checkAuthentication", null, { withCredentials: true }).then((res) => {
+      setUsernanme(res.data)
+    })
+  }, [])
+
     return(
         <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
             <header className="flex items-center standard-app-padding">
@@ -116,21 +125,31 @@ export default function AppHeader() {
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className="grow text-right">
+                { username ? (
+                  <>
+                    <span>{username}</span>
+                    <Button asChild className="mr-3"><Link href="/signup">Log out</Link></Button>
+                  </>
+                ) : (
+                  <>
                     <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">
                     <Link href="/login">Log in</Link>
                     </Button>
                     <Button asChild className="mr-3"><Link href="/signup">Sign up</Link></Button>
-                    {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
-                    <NavigationMenu className="inline-block md:hidden">
-                        <NavigationMenuList>
-                            <NavigationMenuItem>
-                                <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
-                                <NavigationMenuContent>
-                                    <NavigationMenuLink>Link</NavigationMenuLink>
-                                </NavigationMenuContent>
-                            </NavigationMenuItem>
-                        </NavigationMenuList>
-                    </NavigationMenu>
+                  </>
+                ) }
+
+                  {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
+                  <NavigationMenu className="inline-block md:hidden">
+                      <NavigationMenuList>
+                          <NavigationMenuItem>
+                              <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
+                              <NavigationMenuContent>
+                                  <NavigationMenuLink>Link</NavigationMenuLink>
+                              </NavigationMenuContent>
+                          </NavigationMenuItem>
+                      </NavigationMenuList>
+                  </NavigationMenu>
                 </div>
             </header>
         </div>
