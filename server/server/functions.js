@@ -24,7 +24,7 @@ async function userRegister(body) {
 
         // Check if username or email already exists
         const existingUser = await db.query(`
-            SELECT username, email FROM preppi_schema.users
+            SELECT username, email FROM users
             WHERE username = $1 OR email = $2
         `, [username, email]);
 
@@ -36,7 +36,7 @@ async function userRegister(body) {
 
         // Try to insert given data to table
         await db.query(`
-            INSERT INTO preppi_schema.users (username, password, email, admin)
+            INSERT INTO users (username, password, email, admin)
             VALUES ($1, $2, $3, $4)
         `, [username, hashedPassword, email, false]);
 
@@ -65,7 +65,7 @@ async function userLogin(body) {
         // Get user from database
         const user = await db.query(`
             SELECT username, password, email, admin 
-            FROM preppi_schema.users 
+            FROM users 
             WHERE (username = $1 OR email = $1)
         `, [username]);
 
@@ -85,18 +85,8 @@ async function userLogin(body) {
             return { status: 401, data: "Incorrect username or password" };
         }
 
-        // Set cookie
-
-        if(!process.env.JWT_SECRET) throw "no jwt secret"
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-        const token = await new jose.SignJWT({ username: username })
-          .setProtectedHeader({ alg: 'HS256' })
-          .setExpirationTime('20h')
-          .sign(secret);
-        console.log(token)
-
         console.log("Login successful.");
-        return { status: 200, data: "Login successful!", token: token };
+        return { status: 200, data: "Login successful!" };
 
     } catch (error) {
         console.error("Error during login:", error);
@@ -123,7 +113,7 @@ async function createQuiz(body) {
         // Check if user is authorized to create quiz
         user = await db.query(`
             SELECT admin 
-            FROM preppi_schema.users 
+            FROM users 
             WHERE (username = $1)
         `, [username]);
     
@@ -139,7 +129,7 @@ async function createQuiz(body) {
             
         // Try putting data into database
         await db.query(`
-            INSERT INTO preppi_schema.quizzes (quiz_name, quiz_desc, questions, subject)
+            INSERT INTO quizzes (quiz_name, quiz_desc, questions, subject)
             VALUES ($1, $2, $3, $4)
         `, [quiz_name, quiz_desc, questions, subject]);
     
@@ -169,7 +159,7 @@ async function addScore(body) {
     
         // Try getting user_id
         user_id = await db.query(`
-            SELECT user_id FROM preppi_schema.users
+            SELECT user_id FROM users
             WHERE username = $1
         `, [username]);
     
@@ -184,7 +174,7 @@ async function addScore(body) {
     
         // Try adding scores
         await db.query(`
-            INSERT INTO preppi_schema.scores (user_id, quiz_id, score)
+            INSERT INTO scores (user_id, quiz_id, score)
             VALUES ($1, $2, $3)
             ON CONFLICT (user_id, quiz_id) DO UPDATE
             SET score = EXCLUDED.score
@@ -214,7 +204,7 @@ async function checkUser(query) {
         
         const user = await db.query(`
         SELECT admin 
-        FROM preppi_schema.users 
+        FROM users 
         WHERE (username = $1)`, [username]);
 
 
@@ -244,13 +234,13 @@ async function getQuizzes(subject, empty) {
             // Look for quizzes with the specified subject
             quizzes = await db.query(`
             SELECT quiz_id, quiz_name, quiz_desc, subject
-            FROM preppi_schema.quizzes 
+            FROM quizzes 
             WHERE subject = $1`, [subject]);
         } else {
             // Get all quizzes
             quizzes = await db.query(`
             SELECT quiz_id, quiz_name, quiz_desc, subject
-            FROM preppi_schema.quizzes`);
+            FROM quizzes`);
         }
 
 
@@ -301,7 +291,7 @@ async function getQuiz(query) {
 
         const quiz = await db.query(`
             SELECT * 
-            FROM preppi_schema.quizzes 
+            FROM quizzes 
             WHERE (quiz_id = $1)
         `, [quiz_id]);
 
@@ -327,9 +317,10 @@ async function getQuiz(query) {
 async function getQuestions(query) {
     try {
         // Initialize data
-        let id = query.id;
+        let id = query.quiz_id;
 
         if (!id) {
+            console.log("Id not given.")
             return { status: 401, data: "Please enter an id!" };
         }
 
@@ -344,7 +335,7 @@ async function getQuestions(query) {
         // Look for questions in a specific quiz
         const questions = await db.query(`
         SELECT questions
-        FROM preppi_schema.quizzes 
+        FROM quizzes 
         WHERE quiz_id = $1`, [id]);
 
         // Check if any questions for that quiz exist
@@ -379,9 +370,9 @@ async function getQuizScores(quiz_id, empty) {
             // Get scores
             scores = await db.query(`
                 SELECT u.username, q.quiz_name, s.score
-                FROM preppi_schema.scores s
-                JOIN preppi_schema.users u ON s.user_id = u.user_id
-                JOIN preppi_schema.quizzes q ON s.quiz_id = q.quiz_id
+                FROM scores s
+                JOIN users u ON s.user_id = u.user_id
+                JOIN quizzes q ON s.quiz_id = q.quiz_id
                 WHERE s.quiz_id = $1
             `, [quiz_id]);
 
@@ -390,9 +381,9 @@ async function getQuizScores(quiz_id, empty) {
             // Get scores
             scores = await db.query(`
                 SELECT u.username, q.quiz_name, s.score
-                FROM preppi_schema.scores s
-                JOIN preppi_schema.users u ON s.user_id = u.user_id
-                JOIN preppi_schema.quizzes q ON s.quiz_id = q.quiz_id
+                FROM scores s
+                JOIN users u ON s.user_id = u.user_id
+                JOIN quizzes q ON s.quiz_id = q.quiz_id
             `);
         }
 
@@ -429,9 +420,9 @@ async function getUserScores(query) {
         // Get user scores
         scores = await db.query(`
             SELECT q.quiz_name, s.score
-            FROM preppi_schema.scores s
-            JOIN preppi_schema.quizzes q ON s.quiz_id = q.quiz_id
-            JOIN preppi_schema.users u ON s.user_id = u.user_id
+            FROM scores s
+            JOIN quizzes q ON s.quiz_id = q.quiz_id
+            JOIN users u ON s.user_id = u.user_id
             WHERE u.username = $1
         `, [username]);
 
@@ -472,7 +463,7 @@ async function editQuiz(body) {
         // Check if user is authorized to create quiz
         user = await db.query(`
             SELECT admin 
-            FROM preppi_schema.users 
+            FROM users 
             WHERE (username = $1)
         `, [username]);
     
@@ -490,7 +481,7 @@ async function editQuiz(body) {
         // Try putting new data into quiz
         if (!questions) {
             quizzes = await db.query(`
-            UPDATE preppi_schema.quizzes 
+            UPDATE quizzes 
             SET quiz_name = $2,
                 quiz_desc = $3,
                 subject = $4
@@ -498,7 +489,7 @@ async function editQuiz(body) {
 
         } else {
             quizzes = await db.query(`
-            UPDATE preppi_schema.quizzes 
+            UPDATE quizzes 
             SET quiz_name = $2,
                 quiz_desc = $3,
                 questions = $4,
@@ -533,7 +524,7 @@ async function deleteQuiz(body) {
         // Check if user is authorized to create quiz
         user = await db.query(`
             SELECT admin 
-            FROM preppi_schema.users 
+            FROM users 
             WHERE (username = $1)
         `, [username]);
     
@@ -550,7 +541,7 @@ async function deleteQuiz(body) {
         // Delete quiz
         // Try deleting quiz
         await db.query(`
-        DELETE FROM preppi_schema.quizzes
+        DELETE FROM quizzes
         WHERE quiz_id = $1`, [quiz_id]);
 
         console.log("Successfully deleted quiz!");

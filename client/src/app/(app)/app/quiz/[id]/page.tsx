@@ -20,7 +20,6 @@ export default function Page ({ params }: { params: { id: string } }) {
       try {
         const response = await axios.get(`http://localhost:3001/quiz?quiz_id=${id}`);
         setQuizData(response.data);
-        console.log("Retrieved data:",response.data);
 
       } catch (error: any) {
         console.error("Error fetching quiz:", error);
@@ -28,6 +27,7 @@ export default function Page ({ params }: { params: { id: string } }) {
       }
     }
 
+    console.log(params.id)
     getQuiz(params.id);
   }, [params.id]);
 
