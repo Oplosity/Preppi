@@ -95,7 +95,7 @@ async function userLogin(body) {
           .sign(secret);
 
         console.log("Login successful.");
-        return { status: 200, data: "Login successful!" };
+        return { status: 200, data: "Login successful!", token: token };
 
     } catch (error) {
         console.error("Error during login:", error);
@@ -247,7 +247,7 @@ async function checkAuthentication(req) {
       
       const user = await db.query(`
       SELECT 1 
-      FROM preppi_schema.users 
+      FROM users 
       WHERE (username = $1)`, [payload.username]);
 
 
