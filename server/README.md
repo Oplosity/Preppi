@@ -25,7 +25,7 @@
 
 ## Requests
 
-### Post requests | Login, Register, Create Quiz, Add score
+### Post requests | Login, Register, Create Quiz, Add score, Logout
 
 - **Login**: `http://localhost:3001/users?type=login`
     - This is for logging in to an existing account
@@ -34,6 +34,9 @@
 - **Register**: `http://localhost:3001/users?type=register`
     - This is for creating a new account
     - **Required data in body**: username (string), password (string), email (string)
+
+- **Logout**: `http://localhost:3001/logout`
+    - This is for deleting jwt from cookies
 
 - **Create Quiz**: `http://localhost:3001/quizzes`
     - This is for creating a new quiz
