@@ -93,7 +93,6 @@ async function userLogin(body) {
           .setProtectedHeader({ alg: 'HS256' })
           .setExpirationTime('20h')
           .sign(secret);
-        console.log(token)
 
         console.log("Login successful.");
         return { status: 200, data: "Login successful!", token: token };
@@ -239,33 +238,25 @@ async function checkAuthentication(req) {
     
       // Check the token from cookie
       const token = req.cookies.jwt;
-    
-      console.log("token: ",token)
 
-      if (!token) return res.status(401).send('No token provided.');
-
-      console.log("token: asdasd")
+      if (!req.cookies.jwt) return { status: 200, data: "" };
 
       if(!process.env.JWT_SECRET) throw "no jwt secret"
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-      const { payload } = jose.JWT.verify(token, secret);
-
-      console.log(payload)
+      const { payload } = await jose.jwtVerify(token, secret);
       
       const user = await db.query(`
-      SELECT admin 
+      SELECT 1 
       FROM preppi_schema.users 
-      WHERE (username = $1)`, [username]);
+      WHERE (username = $1)`, [payload.username]);
 
 
       if (user.rows.length === 0) {
           console.log("Authentication failed, user not found.");
-          return { status: 401, data: "Incorrect username!" };
+          return { status: 200, data: "" };
       } 
-
-      console.log("Successfully checked whether user is admin or not.");
-      const isAdmin = user.rows[0].admin;
-      return { status: 200, data: ''+isAdmin+'' };
+      
+      return { status: 200, data: payload.username };
 
   } catch (error) {
       console.error("Error during authentication check:", error);
