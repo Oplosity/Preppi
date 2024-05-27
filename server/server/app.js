@@ -32,8 +32,8 @@ app.post('/users', async (req, res) => {
     } else if (type === "login") {
         console.log("Received login request.")
         const result = await userLogin(req.body);
-        
         if(result.token){
+          console.log(result.token)
           res.cookie('jwt', result.token, {
             httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
             secure: false, // process.env.NODE_ENV === 'production'
@@ -74,13 +74,23 @@ app.post('/scores', async (req, res) => {
     res.status(result.status).send(result.data || result.message);
 });
 
-// Check user authentication
+// Check user authentication 
 app.post('/checkAuthentication', async (req, res) => {
   console.log("Received authentication check request");
   const result = await checkAuthentication(req);
   res.status(result.status).send(result.data || result.message);
 });
 
+// Log user out (basically, remove a cookie called "jwt")
+app.post('/logout', async (req, res) => {
+  console.log("Received logout request");
+  try{
+    res.clearCookie("jwt");
+    res.status(200).send("success");
+  }catch(e){
+    res.status(500).send("Internal Server Error: "+e);
+  }
+});
 
     // GET REQUESTS //
 

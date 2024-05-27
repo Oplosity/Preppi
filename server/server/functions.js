@@ -199,6 +199,37 @@ async function addScore(body) {
     }
 }
 
+async function checkAuthentication(req) {
+  try {
+    
+      // Check the token from cookie
+      const token = req.cookies.jwt;
+
+      if (!req.cookies.jwt) return { status: 200, data: "" };
+
+      if(!process.env.JWT_SECRET) throw "no jwt secret"
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      const { payload } = await jose.jwtVerify(token, secret);
+      
+      const user = await db.query(`
+      SELECT 1 
+      FROM users 
+      WHERE (username = $1)`, [payload.username]);
+
+
+      if (user.rows.length === 0) {
+          console.log("Authentication failed, user not found.");
+          return { status: 200, data: "" };
+      } 
+      
+      return { status: 200, data: payload.username };
+
+  } catch (error) {
+      console.error("Error during authentication check:", error);
+      return { status: 500, message: "Internal Server Error " + error};
+  }
+}
+
     // GET REQUESTS //
 
 // Check if user is admin
@@ -230,38 +261,6 @@ async function checkUser(query) {
         console.error("Error during user auth:", error);
         return { status: 500, message: "Internal Server Error " + error};
     }
-}
-
-// Check if user is admin
-async function checkAuthentication(req) {
-  try {
-    
-      // Check the token from cookie
-      const token = req.cookies.jwt;
-
-      if (!req.cookies.jwt) return { status: 200, data: "" };
-
-      if(!process.env.JWT_SECRET) throw "no jwt secret"
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-      const { payload } = await jose.jwtVerify(token, secret);
-      
-      const user = await db.query(`
-      SELECT 1 
-      FROM users 
-      WHERE (username = $1)`, [payload.username]);
-
-
-      if (user.rows.length === 0) {
-          console.log("Authentication failed, user not found.");
-          return { status: 200, data: "" };
-      } 
-      
-      return { status: 200, data: payload.username };
-
-  } catch (error) {
-      console.error("Error during authentication check:", error);
-      return { status: 500, message: "Internal Server Error " + error};
-  }
 }
 
 // Get quizzes
@@ -458,11 +457,11 @@ async function getUserScores(query) {
             return { status: 400, message: "No username specified" };
         }
     
+        console.log(username)
         // Get user scores
         scores = await db.query(`
-            SELECT q.quiz_name, s.score
+            SELECT s.quiz_id, s.score
             FROM scores s
-            JOIN quizzes q ON s.quiz_id = q.quiz_id
             JOIN users u ON s.user_id = u.user_id
             WHERE u.username = $1
         `, [username]);

@@ -3,11 +3,13 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { QuizContext } from "../layout";
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Progress } from "@/components/ui/progress";
+import { count } from "console";
+import { QuizContext } from "../provider";
 
 function InputQuestion () {
   return(
@@ -50,6 +52,8 @@ export default function Page({ params }: { params: { id: string; question: strin
   const [answer, setAnswer] = useState<string>("")
   const [questionData, setQuestionData] = useState<any>(null);
   const [currentQuestionData, setCurrentQuestionData] = useState<any>({status: "loading"});
+  const [questionsNumber, setQuestionsNumber] = useState<number>(0)
+  const [progress, setProgress] = useState<number>()
 
 
   useEffect(() => {
@@ -57,6 +61,8 @@ export default function Page({ params }: { params: { id: string; question: strin
       try {
         const response = await axios.get(`http://localhost:3001/quizzes/questions?quiz_id=${id}`);
         setQuestionData(response.data[0].questions);
+        setQuestionsNumber(Object.keys(response.data[0].questions).length)
+        setProgress(((Number(params.question)-1)/Object.keys(response.data[0].questions).length)*100)
       } catch (error: any) {
         console.error("Error fetching questions:", error);
         throw error;
@@ -64,7 +70,7 @@ export default function Page({ params }: { params: { id: string; question: strin
     }
 
     getQuestion(params.id);
-  }, [params.id]);
+  }, [params.id, params.question]);
 
   useEffect(() => {
     if (questionData) {
@@ -74,25 +80,43 @@ export default function Page({ params }: { params: { id: string; question: strin
         setCurrentQuestionData(selectedQuestionData);
       }else{
         setCurrentQuestionData({ status: "empty" });
+
+        const username = axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true})
+        .then((res) => {
+          let count = 0;
+          const max = Number(params.question) - 1;
+          for(let i = 1; i <= max; i++){
+            if(questionData["question"+i].answer === userAnswers[i-1]) count++
+          }
+
+          count = (count / max);
+          count = Number(count.toFixed(2));
+
+          console.log(count);
+          const value = {username: res.data, quiz_id: params.id, score: count};
+          axios.post(`http://localhost:3001/scores`, value);
+        });
       }
       console.log(questionData["question"+params.question])
     }
-  }, [params.question, questionData]);
+  }, [params.question, questionData, params.id, userAnswers]);
 
   const countResult = () => {
     let count = 0;
     const max = Number(params.question) - 1;
     for(let i = 1; i <= max; i++){
-      console.log(questionData["question"+i].answer, userAnswers[i-1])
       if(questionData["question"+i].answer === userAnswers[i-1]) count++
     }
     return count+"/"+max
   }
 
+  if (currentQuestionData.status === "empty") {
+
+  }
 
   return(
     <>
-    {userAnswers}
+      <Progress value={progress} />
       { currentQuestionData.status === "exists" ? (
         <>
           <div className="grow">
@@ -110,16 +134,23 @@ export default function Page({ params }: { params: { id: string; question: strin
           </div>
         </>
       ) : currentQuestionData.status === "empty" ? (
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="text-center">
-            <FontAwesomeIcon icon={faCheck} className="text-8xl" />
-            <h1 className="text-4xl bold">Quiz ended!</h1>
-            <p>Result: {countResult()}</p>
+        <>
+          <div className="grow">
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center">
+                <FontAwesomeIcon icon={faCheck} className="text-8xl" />
+                <h1 className="text-4xl bold">Quiz ended!</h1>
+                <p>Result: {countResult()}</p>
+              </div>
+            </div>
           </div>
+          <div className="flex justify-end">
+          <Button><Link href="/app/quizzes/">Back to quizzes</Link></Button>
         </div>
+      </>
       ) : (
         <>
-          <div></div>
+          <div>Loading</div>
         </>
       ) }
     </>

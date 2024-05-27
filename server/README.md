@@ -45,7 +45,7 @@
 
 - **Add Score**: `http://localhost:3001/scores`
     - This is for adding scores users get from quizzes
-    - **Required data in body**: username (string), quiz_id (int)
+    - **Required data in body**: username (string), quiz_id (int), score (int)
 
 ### Get requests | Get Quizzes, Get Questions, Authenticate user, Get scores, Get Specific User's Scores
 
@@ -74,7 +74,7 @@
 - **Get A Specific User's Scores**: `http://localhost:3001/scores/users?username=username`
     - This is for getting scores of users
     - `'username'` is the user whose scores we want
-    - Returns quiz_name (string) and score (int)
+    - Returns quiz_id (int) and score (int)
 
 ### Put requests | Edit Quiz
 
