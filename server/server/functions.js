@@ -457,11 +457,11 @@ async function getUserScores(query) {
             return { status: 400, message: "No username specified" };
         }
     
+        console.log(username)
         // Get user scores
         scores = await db.query(`
-            SELECT q.quiz_name, s.score
+            SELECT s.quiz_id, s.score
             FROM scores s
-            JOIN quizzes q ON s.quiz_id = q.quiz_id
             JOIN users u ON s.user_id = u.user_id
             WHERE u.username = $1
         `, [username]);

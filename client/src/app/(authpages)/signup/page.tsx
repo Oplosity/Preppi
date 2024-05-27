@@ -129,7 +129,7 @@ export default function Home() {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button type="submit" size={"wide"}>Submit</Button>
             </form>
           </Form>
         </div>
