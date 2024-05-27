@@ -89,15 +89,12 @@ export default function Page({ params }: { params: { id: string; question: strin
             if(questionData["question"+i].answer === userAnswers[i-1]) count++
           }
 
-          count = (count / max);
-          const stringCount: string = count.toFixed(2);
+          const stringCount: string = (count / max).toFixed(2);
 
-          console.log(count);
           const value = {username: res.data, quiz_id: params.id, score: stringCount};
           axios.post(`http://localhost:3001/scores`, value);
         });
       }
-      console.log(questionData["question"+params.question])
     }
   }, [params.question, questionData, params.id, userAnswers]);
 

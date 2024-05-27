@@ -28,7 +28,7 @@ export default function Page ({ params }: { params: { id: string } }) {
         const response2 = await axios.get(`http://localhost:3001/scores/users?username=${username.data}`);
 
         if (response2.data === "User has no scores") {
-          console.log("No score exists for quiz")
+          // no score exists for this quiz
 
         } else {
           for (let i in response2.data) {
