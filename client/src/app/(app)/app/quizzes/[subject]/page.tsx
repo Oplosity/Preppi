@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import type { Metadata } from 'next'
 
-export const axiosAuth = axios.create()
+const axiosAuth = axios.create()
 
 const baseUrl = process.env.BASE_URL || ""
 
@@ -20,7 +20,7 @@ const cookiesInterceptor = async (req: any) => {
   return req
 }
 
-export const AxiosService = axios.create({
+const AxiosService = axios.create({
   baseURL: baseUrl
 })
 
