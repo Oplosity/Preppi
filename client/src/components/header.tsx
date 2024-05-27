@@ -86,7 +86,6 @@ export default function Header() {
                   <div className="flex w-full grow justify-end content-center">
                     <Button className="mr-3" variant="halfTransparent" onClick={() => {
                       axios.post("http://localhost:3001/logout", null, { withCredentials: true }).then((res) => {
-                        console.log(res)
                         window.location.reload()
                       })
                     }}>Log out</Button>
