@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { count } from "console";
 
 function InputQuestion () {
   return(
@@ -74,6 +75,22 @@ export default function Page({ params }: { params: { id: string; question: strin
         setCurrentQuestionData(selectedQuestionData);
       }else{
         setCurrentQuestionData({ status: "empty" });
+
+        const username = axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true})
+        .then((res) => {
+          let count = 0;
+          const max = Number(params.question) - 1;
+          for(let i = 1; i <= max; i++){
+            if(questionData["question"+i].answer === userAnswers[i-1]) count++
+          }
+
+          count = (count / max);
+          count = Number(count.toFixed(2));
+
+          console.log(count);
+          const value = {username: res.data, quiz_id: params.id, score: count};
+          axios.post(`http://localhost:3001/scores`, value);
+        });
       }
       console.log(questionData["question"+params.question])
     }
@@ -83,12 +100,14 @@ export default function Page({ params }: { params: { id: string; question: strin
     let count = 0;
     const max = Number(params.question) - 1;
     for(let i = 1; i <= max; i++){
-      console.log(questionData["question"+i].answer, userAnswers[i-1])
       if(questionData["question"+i].answer === userAnswers[i-1]) count++
     }
     return count+"/"+max
   }
 
+  if (currentQuestionData.status === "empty") {
+
+  }
 
   return(
     <>

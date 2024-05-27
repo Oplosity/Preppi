@@ -50,6 +50,18 @@ async function getQuizzes(subject: string) {
   }
 }
 
+async function getScore(id: number) { 
+  try {
+    const username = await axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true});
+    console.log(username.data)
+
+  } catch (error) {
+    console.log(error);
+  }
+  
+  return Math.round(Math.random() * 10) / 10;
+}
+
 export default async function Page ({ params }: { params: { subject: string } }) {
 
     const response = await getQuizzes(params.subject);
@@ -57,11 +69,18 @@ export default async function Page ({ params }: { params: { subject: string } })
 
     if (response.status === 200) {
       try {
-        retrievedQuizzes = response.data.map((quiz: any) => 
-          <div>
-            <Button className="md:hidden"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{params.subject}</Button>
-            <QuizOption name={quiz.quiz_name} description={quiz.quiz_desc} completed={56} id={quiz.quiz_id}  />
-          </div>
+        retrievedQuizzes = response.data.map(async (quiz: any) => 
+
+          {
+            const score = await getScore(quiz.id);
+
+            return (
+                <div>
+                <Button className="md:hidden"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{params.subject}</Button>
+                <QuizOption name={quiz.quiz_name} description={quiz.quiz_desc} completed={score * 100} id={quiz.quiz_id}  />
+                </div>
+            ) 
+          },
         );
 
       } catch {
