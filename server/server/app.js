@@ -20,11 +20,6 @@ app.use(cors({
 
     // POST REQUESTS //
 
-app.get('/test', async (req, res) => {
-    const result = await test();
-    res.status(result.status).send(result.data || result.message);
-});
-
 // User login/register
 app.post('/users', async (req, res) => {
     const type = req.query.type;
@@ -67,7 +62,7 @@ app.post('/scores', async (req, res) => {
     res.status(result.status).send(result.data || result.message);
 });
 
-// Check user authentication
+// Check user authentication 
 app.post('/checkAuthentication', async (req, res) => {
   console.log("Received authentication check request");
   const result = await checkAuthentication(req);

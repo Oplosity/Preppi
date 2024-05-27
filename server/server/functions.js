@@ -239,7 +239,10 @@ async function checkAuthentication(req) {
       // Check the token from cookie
       const token = req.cookies.jwt;
 
-      if (!req.cookies.jwt) return { status: 200, data: "" };
+      if (!req.cookies.jwt) {
+        console.log("asd")
+        return { status: 200, data: "asd" }
+      };
 
       if(!process.env.JWT_SECRET) throw "no jwt secret"
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -256,6 +259,7 @@ async function checkAuthentication(req) {
           return { status: 200, data: "" };
       } 
       
+      console.log(payload.username);
       return { status: 200, data: payload.username };
 
   } catch (error) {
@@ -458,11 +462,11 @@ async function getUserScores(query) {
             return { status: 400, message: "No username specified" };
         }
     
+        console.log(username)
         // Get user scores
         scores = await db.query(`
-            SELECT q.quiz_name, s.score
+            SELECT s.quiz_id, s.score
             FROM scores s
-            JOIN quizzes q ON s.quiz_id = q.quiz_id
             JOIN users u ON s.user_id = u.user_id
             WHERE u.username = $1
         `, [username]);
