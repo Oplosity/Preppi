@@ -54,11 +54,7 @@ export default function Home() {
     },
   })
   
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
     try{
       await axios.post("http://localhost:3001/users?type=register", values, {withCredentials: true})
       await axios.post("http://localhost:3001/users?type=login", values, {withCredentials: true})
