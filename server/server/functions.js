@@ -199,6 +199,37 @@ async function addScore(body) {
     }
 }
 
+async function checkAuthentication(req) {
+  try {
+    
+      // Check the token from cookie
+      const token = req.cookies.jwt;
+
+      if (!req.cookies.jwt) return { status: 200, data: "" };
+
+      if(!process.env.JWT_SECRET) throw "no jwt secret"
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      const { payload } = await jose.jwtVerify(token, secret);
+      
+      const user = await db.query(`
+      SELECT 1 
+      FROM users 
+      WHERE (username = $1)`, [payload.username]);
+
+
+      if (user.rows.length === 0) {
+          console.log("Authentication failed, user not found.");
+          return { status: 200, data: "" };
+      } 
+      
+      return { status: 200, data: payload.username };
+
+  } catch (error) {
+      console.error("Error during authentication check:", error);
+      return { status: 500, message: "Internal Server Error " + error};
+  }
+}
+
     // GET REQUESTS //
 
 // Check if user is admin
@@ -230,42 +261,6 @@ async function checkUser(query) {
         console.error("Error during user auth:", error);
         return { status: 500, message: "Internal Server Error " + error};
     }
-}
-
-// Check if user is admin
-async function checkAuthentication(req) {
-  try {
-    
-      // Check the token from cookie
-      const token = req.cookies.jwt;
-
-      if (!req.cookies.jwt) {
-        console.log("asd")
-        return { status: 200, data: "asd" }
-      };
-
-      if(!process.env.JWT_SECRET) throw "no jwt secret"
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-      const { payload } = await jose.jwtVerify(token, secret);
-      
-      const user = await db.query(`
-      SELECT 1 
-      FROM users 
-      WHERE (username = $1)`, [payload.username]);
-
-
-      if (user.rows.length === 0) {
-          console.log("Authentication failed, user not found.");
-          return { status: 200, data: "" };
-      } 
-      
-      console.log(payload.username);
-      return { status: 200, data: payload.username };
-
-  } catch (error) {
-      console.error("Error during authentication check:", error);
-      return { status: 500, message: "Internal Server Error " + error};
-  }
 }
 
 // Get quizzes
