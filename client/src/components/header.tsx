@@ -17,6 +17,8 @@ import { Button } from "./ui/button"
 import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
+import { Avatar, AvatarImage } from "./ui/avatar"
+import axios from "axios"
 
 const components: { name: string; rank: number; score: number }[] = [ //I guess this dropdown can be a leaderboard
     {
@@ -42,6 +44,12 @@ const components: { name: string; rank: number; score: number }[] = [ //I guess 
   ]
 
 export default function Header() {
+  const [username, setUsernanme] = React.useState<string>("")
+  React.useEffect(() => {
+    axios.post("http://localhost:3001/checkAuthentication", null, { withCredentials: true }).then((res) => {
+      setUsernanme(res.data)
+    })
+  }, [])
     return(
         <div className="fixed z-10 w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover">
             <header className="flex items-center standard-page-padding">
@@ -51,7 +59,7 @@ export default function Header() {
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger><Link href="http://localhost:3000#quizzes">Quizzes</Link></NavigationMenuTrigger>
+                            <NavigationMenuTrigger><Link href="http://localhost:3000/app/quizzes/">Quizzes</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
@@ -74,22 +82,40 @@ export default function Header() {
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className="grow text-right">
+                { username ? (
+                  <div className="flex w-full grow justify-end content-center">
+                    <Button className="mr-3" variant="halfTransparent" onClick={() => {
+                      axios.post("http://localhost:3001/logout", null, { withCredentials: true }).then((res) => {
+                        console.log(res)
+                        window.location.reload()
+                      })
+                    }}>Log out</Button>
+                    <span className="mr-3 leading-10 text-white">{username}</span>
+                    <div className="">
+                      <Avatar>
+                        <AvatarImage src="https://picsum.photos/200" />
+                      </Avatar>
+                    </div>
+                  </div>
+                ) : (
+                  <>
                     <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">
                       <Link href="/login">Log in</Link>
                     </Button>
                     <Button asChild className="mr-3"><Link href="/signup">Sign up</Link></Button>
-                    {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
-                    <NavigationMenu className="inline-block md:hidden">
-                        <NavigationMenuList>
-                            <NavigationMenuItem>
-                                <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
-                                <NavigationMenuContent>
-                                    <NavigationMenuLink>Link</NavigationMenuLink>
-                                </NavigationMenuContent>
-                            </NavigationMenuItem>
-                        </NavigationMenuList>
-                    </NavigationMenu>
-                </div>
+                  </>
+                ) }
+                <NavigationMenu className="inline-block md:hidden">
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
+                            <NavigationMenuContent>
+                                <NavigationMenuLink>Link</NavigationMenuLink>
+                            </NavigationMenuContent>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
+              </div>
             </header>
         </div>
     )

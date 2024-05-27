@@ -1,13 +1,12 @@
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const pool = new Pool({
-  user: 'postgres', // Change this to your postgresql username 
-                    // Postgresql is default, so unless you changed it this is your username too
-
-  password: 'admin', // Change this to your postgresql password
-  host: 'localhost',
-  port: 5432, // Change this to the port your postgresql server listens on
-  database: 'preppi_db'
+  user: process.env.user, // postgres by default
+  password: process.env.password,
+  host: process.env.host, // localhost by default
+  port: process.env.port, // 5432 by default
+  database: process.env.database // preppi_db by default
 });
 
 module.exports = {
