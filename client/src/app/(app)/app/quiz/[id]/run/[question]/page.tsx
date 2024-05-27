@@ -81,7 +81,7 @@ export default function Page({ params }: { params: { id: string; question: strin
       }else{
         setCurrentQuestionData({ status: "empty" });
 
-        const username = axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true})
+        axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true})
         .then((res) => {
           let count = 0;
           const max = Number(params.question) - 1;
@@ -90,10 +90,10 @@ export default function Page({ params }: { params: { id: string; question: strin
           }
 
           count = (count / max);
-          count = Number(count.toFixed(2));
+          const stringCount: string = count.toFixed(2);
 
           console.log(count);
-          const value = {username: res.data, quiz_id: params.id, score: count};
+          const value = {username: res.data, quiz_id: params.id, score: stringCount};
           axios.post(`http://localhost:3001/scores`, value);
         });
       }
@@ -108,10 +108,6 @@ export default function Page({ params }: { params: { id: string; question: strin
       if(questionData["question"+i].answer === userAnswers[i-1]) count++
     }
     return count+"/"+max
-  }
-
-  if (currentQuestionData.status === "empty") {
-
   }
 
   return(

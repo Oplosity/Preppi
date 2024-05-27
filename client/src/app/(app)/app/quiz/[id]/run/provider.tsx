@@ -10,7 +10,7 @@ export const QuizContext = createContext<{
   userAnswers: [],
   setUserAnswers: () => {}
 })
-export default function RootLayout({
+export default function QuizProvider({
   children,
 }: Readonly<{
   children: React.ReactNode;

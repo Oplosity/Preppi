@@ -7,6 +7,31 @@ import axios from 'axios';
 
 import type { Metadata } from 'next'
 
+export const axiosAuth = axios.create()
+
+const baseUrl = process.env.BASE_URL || ""
+
+const cookiesInterceptor = async (req: any) => {
+  const { cookies } = (await import("next/headers"))
+  const cookiesString = cookies().getAll()
+    .map((item) => `${item.name}=${item.value}`)
+    .join("; ")
+  req.headers.cookie = cookiesString
+  return req
+}
+
+export const AxiosService = axios.create({
+  baseURL: baseUrl
+})
+
+AxiosService.interceptors.request.use(cookiesInterceptor)
+
+AxiosService.interceptors.response.use(
+  (res) => {
+    return res
+  }
+)
+
 export async function generateMetadata(
   { params }: { params: { subject: string } }
 ): Promise<Metadata> {
@@ -52,14 +77,21 @@ async function getQuizzes(subject: string) {
 
 async function getScore(id: number) { 
   try {
-    const username = await axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true});
-    console.log(username.data)
+    const username = await AxiosService.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true});
+
+    const score = await axios.get(`http://localhost:3001/scores/users?username=${username.data}`);
+
+    if (score.data === "User has no scores") return 0
+
+    for (let i in score.data)
+      if (score.data[i].quiz_id === id)
+        return score.data[i].score;
 
   } catch (error) {
     console.log(error);
   }
   
-  return Math.round(Math.random() * 10) / 10;
+  return 0
 }
 
 export default async function Page ({ params }: { params: { subject: string } }) {
@@ -68,14 +100,15 @@ export default async function Page ({ params }: { params: { subject: string } })
     let retrievedQuizzes;
 
     if (response.status === 200) {
+      
       try {
         retrievedQuizzes = response.data.map(async (quiz: any) => 
 
           {
-            const score = await getScore(quiz.id);
+            const score = await getScore(quiz.quiz_id);
 
             return (
-                <div key={quiz.id}>
+                <div key={quiz.quiz_id}>
                 <Button className="md:hidden"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{params.subject}</Button>
                 <QuizOption name={quiz.quiz_name} description={quiz.quiz_desc} completed={score * 100} id={quiz.quiz_id}  />
                 </div>
