@@ -19,6 +19,8 @@ import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 
 const components: { title: string; href: string; description: string }[] = [
     {
@@ -126,10 +128,14 @@ export default function AppHeader() {
                 </NavigationMenu>
                 <div className="grow text-right">
                 { username ? (
-                  <>
-                    <span>{username}</span>
+                  <div className="flex w-full">
                     <Button asChild className="mr-3"><Link href="/signup">Log out</Link></Button>
-                  </>
+                    <div className="">
+                      <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                      </Avatar>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     <Button asChild variant="halfTransparent" className="hidden sm:inline-block mr-3">

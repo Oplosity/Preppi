@@ -110,16 +110,23 @@ export default function Page({ params }: { params: { id: string; question: strin
           </div>
         </>
       ) : currentQuestionData.status === "empty" ? (
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="text-center">
-            <FontAwesomeIcon icon={faCheck} className="text-8xl" />
-            <h1 className="text-4xl bold">Quiz ended!</h1>
-            <p>Result: {countResult()}</p>
+        <>
+          <div className="grow">
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center">
+                <FontAwesomeIcon icon={faCheck} className="text-8xl" />
+                <h1 className="text-4xl bold">Quiz ended!</h1>
+                <p>Result: {countResult()}</p>
+              </div>
+            </div>
           </div>
+          <div className="flex justify-end">
+          <Button><Link href="/app/quizzes/">Back to quizzes</Link></Button>
         </div>
+      </>
       ) : (
         <>
-          <div></div>
+          <div>Loading</div>
         </>
       ) }
     </>
