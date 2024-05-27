@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Progress } from "@/components/ui/progress";
 
 function InputQuestion () {
   return(
@@ -50,6 +51,8 @@ export default function Page({ params }: { params: { id: string; question: strin
   const [answer, setAnswer] = useState<string>("")
   const [questionData, setQuestionData] = useState<any>(null);
   const [currentQuestionData, setCurrentQuestionData] = useState<any>({status: "loading"});
+  const [questionsNumber, setQuestionsNumber] = useState<number>(0)
+  const [progress, setProgress] = useState<number>()
 
 
   useEffect(() => {
@@ -57,6 +60,8 @@ export default function Page({ params }: { params: { id: string; question: strin
       try {
         const response = await axios.get(`http://localhost:3001/quizzes/questions?quiz_id=${id}`);
         setQuestionData(response.data[0].questions);
+        setQuestionsNumber(Object.keys(response.data[0].questions).length)
+        setProgress(((Number(params.question)-1)/Object.keys(response.data[0].questions).length)*100)
       } catch (error: any) {
         console.error("Error fetching questions:", error);
         throw error;
@@ -92,7 +97,7 @@ export default function Page({ params }: { params: { id: string; question: strin
 
   return(
     <>
-    {userAnswers}
+      <Progress value={progress} />
       { currentQuestionData.status === "exists" ? (
         <>
           <div className="grow">

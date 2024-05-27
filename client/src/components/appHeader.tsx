@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useRouter } from 'next/navigation'
 
 
 const components: { title: string; href: string; description: string }[] = [
@@ -61,6 +62,8 @@ const components: { title: string; href: string; description: string }[] = [
   ]
 
 export default function AppHeader() {
+  const router = useRouter()
+
   const [username, setUsernanme] = useState<string>("")
   useEffect(() => {
     axios.post("http://localhost:3001/checkAuthentication", null, { withCredentials: true }).then((res) => {
@@ -77,20 +80,7 @@ export default function AppHeader() {
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger>Quizzes</NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                {components.map((component) => (
-                                    <ListItem
-                                    key={component.title}
-                                    title={component.title}
-                                    href={component.href}
-                                    >
-                                    {component.description}
-                                    </ListItem>
-                                ))}
-                                </ul>
-                            </NavigationMenuContent>
+                            <NavigationMenuTrigger><Link href="http://localhost:3000/app/quizzes/">Quizzes</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
@@ -128,11 +118,17 @@ export default function AppHeader() {
                 </NavigationMenu>
                 <div className="grow text-right">
                 { username ? (
-                  <div className="flex w-full">
-                    <Button asChild className="mr-3"><Link href="/signup">Log out</Link></Button>
+                  <div className="flex w-full grow justify-end content-center">
+                    <Button className="mr-3" variant="halfTransparent" onClick={() => {
+                      axios.post("http://localhost:3001/logout", null, { withCredentials: true }).then((res) => {
+                        console.log(res)
+                        window.location.reload()
+                      })
+                    }}>Log out</Button>
+                    <span className="mr-3 leading-10 text-white">{username}</span>
                     <div className="">
                       <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarImage src="https://picsum.photos/200" />
                       </Avatar>
                     </div>
                   </div>
@@ -144,19 +140,17 @@ export default function AppHeader() {
                     <Button asChild className="mr-3"><Link href="/signup">Sign up</Link></Button>
                   </>
                 ) }
-
-                  {/* <Button variant="halfTransparent" className="inline-block sm:hidden"><FontAwesomeIcon icon={faBars} /></Button> */}
-                  <NavigationMenu className="inline-block md:hidden">
-                      <NavigationMenuList>
-                          <NavigationMenuItem>
-                              <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
-                              <NavigationMenuContent>
-                                  <NavigationMenuLink>Link</NavigationMenuLink>
-                              </NavigationMenuContent>
-                          </NavigationMenuItem>
-                      </NavigationMenuList>
-                  </NavigationMenu>
-                </div>
+                <NavigationMenu className="inline-block md:hidden">
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <Button asChild variant="halfTransparent"><NavigationMenuTrigger><FontAwesomeIcon icon={faBars} /></NavigationMenuTrigger></Button>
+                            <NavigationMenuContent>
+                                <NavigationMenuLink>Link</NavigationMenuLink>
+                            </NavigationMenuContent>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
+              </div>
             </header>
         </div>
     )
