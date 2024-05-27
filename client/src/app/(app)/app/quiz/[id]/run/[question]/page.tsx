@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { QuizContext } from "../layout";
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Progress } from "@/components/ui/progress";
 import { count } from "console";
+import { QuizContext } from "../provider";
 
 function InputQuestion () {
   return(
@@ -70,7 +70,7 @@ export default function Page({ params }: { params: { id: string; question: strin
     }
 
     getQuestion(params.id);
-  }, [params.id]);
+  }, [params.id, params.question]);
 
   useEffect(() => {
     if (questionData) {
@@ -99,7 +99,7 @@ export default function Page({ params }: { params: { id: string; question: strin
       }
       console.log(questionData["question"+params.question])
     }
-  }, [params.question, questionData]);
+  }, [params.question, questionData, params.id, userAnswers]);
 
   const countResult = () => {
     let count = 0;

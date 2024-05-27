@@ -75,7 +75,7 @@ export default async function Page ({ params }: { params: { subject: string } })
             const score = await getScore(quiz.id);
 
             return (
-                <div>
+                <div key={quiz.id}>
                 <Button className="md:hidden"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{params.subject}</Button>
                 <QuizOption name={quiz.quiz_name} description={quiz.quiz_desc} completed={score * 100} id={quiz.quiz_id}  />
                 </div>
