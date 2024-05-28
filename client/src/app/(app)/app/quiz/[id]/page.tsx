@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import { useEffect, useState } from "react"
 
-
+const serverUrl = process.env.SERVER_URL || ""
 
 export default function Page ({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -20,12 +20,12 @@ export default function Page ({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function getQuiz(id: string) {
       try {
-        const response = await axios.get(`http://localhost:3001/quiz?quiz_id=${id}`);
+        const response = await axios.get(`${serverUrl}quiz?quiz_id=${id}`);
         setQuizData(response.data);
         
-        const username = await axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true});
+        const username = await axios.post(`${serverUrl}checkAuthentication`, null, {withCredentials: true});
 
-        const response2 = await axios.get(`http://localhost:3001/scores/users?username=${username.data}`);
+        const response2 = await axios.get(`${serverUrl}scores/users?username=${username.data}`);
 
         if (response2.data === "User has no scores") {
           // no score exists for this quiz

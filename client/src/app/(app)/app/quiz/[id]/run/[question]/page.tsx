@@ -11,6 +11,8 @@ import { Progress } from "@/components/ui/progress";
 import { count } from "console";
 import { QuizContext } from "../provider";
 
+const serverUrl = process.env.SERVER_URL || ""
+
 function InputQuestion () {
   return(
     <div className="w-full bg-[url('/landing/landing-bg.svg')] bg-no-repeat bg-cover rounded-xl p-3">
@@ -59,7 +61,7 @@ export default function Page({ params }: { params: { id: string; question: strin
   useEffect(() => {
     async function getQuestion(id: string) {
       try {
-        const response = await axios.get(`http://localhost:3001/quizzes/questions?quiz_id=${id}`);
+        const response = await axios.get(`${serverUrl}quizzes/questions?quiz_id=${id}`);
         setQuestionData(response.data[0].questions);
         setQuestionsNumber(Object.keys(response.data[0].questions).length)
         setProgress(((Number(params.question)-1)/Object.keys(response.data[0].questions).length)*100)
@@ -81,7 +83,7 @@ export default function Page({ params }: { params: { id: string; question: strin
       }else{
         setCurrentQuestionData({ status: "empty" });
 
-        axios.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true})
+        axios.post(`${serverUrl}checkAuthentication`, null, {withCredentials: true})
         .then((res) => {
           let count = 0;
           const max = Number(params.question) - 1;
@@ -92,7 +94,7 @@ export default function Page({ params }: { params: { id: string; question: strin
           const stringCount: string = (count / max).toFixed(2);
 
           const value = {username: res.data, quiz_id: params.id, score: stringCount};
-          axios.post(`http://localhost:3001/scores`, value);
+          axios.post(`${serverUrl}scores`, value);
         });
       }
     }

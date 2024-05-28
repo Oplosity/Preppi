@@ -22,6 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import axios from 'axios'
+
+const serverUrl = process.env.SERVER_URL || ""
  
 const formSchema = z.object({
   username: z.string().min(2, { message: "Required" }).max(50),
@@ -43,7 +45,7 @@ export default function Home() {
   
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try{
-      await axios.post("http://localhost:3001/users?type=login", values, {withCredentials: true})
+      await axios.post(`${serverUrl}users?type=login`, values, {withCredentials: true})
       router.push("/app")
     }catch(error: any){
       alert("Form submit error: "+(error.response?.data ? error.response.data : error))

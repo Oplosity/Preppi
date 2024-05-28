@@ -11,6 +11,8 @@ const axiosAuth = axios.create()
 
 const baseUrl = process.env.BASE_URL || ""
 
+const serverUrl = process.env.SERVER_URL || ""
+
 const cookiesInterceptor = async (req: any) => {
   const { cookies } = (await import("next/headers"))
   const cookiesString = cookies().getAll()
@@ -65,9 +67,9 @@ async function getQuizzes(subject: string) {
   try {
     let response;
     if (subject === "all") {
-      response = await axios.get(`http://localhost:3001/quizzes`);
+      response = await axios.get(`${serverUrl}quizzes`);
     } else {
-      response = await axios.get(`http://localhost:3001/quizzes?subject=${subject}`);
+      response = await axios.get(`${serverUrl}quizzes?subject=${subject}`);
     }
     return response;
   } catch (error: any) {
@@ -77,9 +79,9 @@ async function getQuizzes(subject: string) {
 
 async function getScore(id: number) { 
   try {
-    const username = await AxiosService.post(`http://localhost:3001/checkAuthentication`, null, {withCredentials: true});
+    const username = await AxiosService.post(`${serverUrl}checkAuthentication`, null, {withCredentials: true});
 
-    const score = await axios.get(`http://localhost:3001/scores/users?username=${username.data}`);
+    const score = await axios.get(`${serverUrl}scores/users?username=${username.data}`);
 
     if (score.data === "User has no scores") return 0
 

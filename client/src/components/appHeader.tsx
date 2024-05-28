@@ -22,6 +22,8 @@ import axios from "axios"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from 'next/navigation'
 
+const serverUrl = process.env.SERVER_URL || ""
+
 
 const components: { title: string; href: string; description: string }[] = [
     {
@@ -66,7 +68,7 @@ export default function AppHeader() {
 
   const [username, setUsernanme] = useState<string>("")
   useEffect(() => {
-    axios.post("http://localhost:3001/checkAuthentication", null, { withCredentials: true }).then((res) => {
+    axios.post(`${serverUrl}checkAuthentication`, null, { withCredentials: true }).then((res) => {
       setUsernanme(res.data)
     })
   }, [])
@@ -80,7 +82,7 @@ export default function AppHeader() {
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger><Link href="http://localhost:3000/app/quizzes/">Quizzes</Link></NavigationMenuTrigger>
+                            <NavigationMenuTrigger><Link href="/app/quizzes/">Quizzes</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
@@ -120,7 +122,7 @@ export default function AppHeader() {
                 { username ? (
                   <div className="flex w-full grow justify-end content-center">
                     <Button className="mr-3" variant="halfTransparent" onClick={() => {
-                      axios.post("http://localhost:3001/logout", null, { withCredentials: true }).then((res) => {
+                      axios.post(`${serverUrl}logout`, null, { withCredentials: true }).then((res) => {
                         window.location.reload()
                       })
                     }}>Log out</Button>

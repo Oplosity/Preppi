@@ -20,6 +20,8 @@ import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import axios from "axios"
 
+const serverUrl = process.env.SERVER_URL || ""
+
 const components: { name: string; rank: number; score: number }[] = [ //I guess this dropdown can be a leaderboard
     {
       name: "test1",
@@ -46,7 +48,7 @@ const components: { name: string; rank: number; score: number }[] = [ //I guess 
 export default function Header() {
   const [username, setUsernanme] = React.useState<string>("")
   React.useEffect(() => {
-    axios.post("http://localhost:3001/checkAuthentication", null, { withCredentials: true }).then((res) => {
+    axios.post(`${serverUrl}checkAuthentication`, null, { withCredentials: true }).then((res) => {
       setUsernanme(res.data)
     })
   }, [])
@@ -59,7 +61,7 @@ export default function Header() {
                 <NavigationMenu className="hidden md:block">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger><Link href="http://localhost:3000/app/quizzes/">Quizzes</Link></NavigationMenuTrigger>
+                            <NavigationMenuTrigger><Link href="/app/quizzes/">Quizzes</Link></NavigationMenuTrigger>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Leaderboards</NavigationMenuTrigger>
@@ -85,7 +87,7 @@ export default function Header() {
                 { username ? (
                   <div className="flex w-full grow justify-end content-center">
                     <Button className="mr-3" variant="halfTransparent" onClick={() => {
-                      axios.post("http://localhost:3001/logout", null, { withCredentials: true }).then((res) => {
+                      axios.post(`${serverUrl}logout`, null, { withCredentials: true }).then((res) => {
                         window.location.reload()
                       })
                     }}>Log out</Button>
